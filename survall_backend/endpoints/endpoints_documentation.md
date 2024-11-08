@@ -19,7 +19,7 @@
 # Get previous answered questions
     # User UUID
 
-    # Returns list of anserend question
+    # Returns list of answered question
         # List Question UUIDs + Texts 
 
 # Get statistics of specific question

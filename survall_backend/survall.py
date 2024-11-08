@@ -9,4 +9,4 @@ class Survall():
     
     def setup(self, openai):
         self.question_list = MockDatabase()
-        self.openai = OpenAiClass().setup(openai)
+        self.openai = OpenAiClass(openai)

@@ -1,8 +1,10 @@
 from objects.question import Question
+from survall_backend.objects.answer import Answer
 
-class POCQuestionList():
+class MockDatabase():
     def __init__(self):
         self.questions = []
+        self.answers = []
 
         # Example question
         self.questions.append(
@@ -14,3 +16,6 @@ class POCQuestionList():
     
     def add_question(self, question:Question):
         self.questions.append(question)
+
+    def add_aswer(self, answer:Answer):
+        self.answers.append(answer)

@@ -1,6 +1,4 @@
-import uuid
-
-from objects.question_list import POCQuestionList
+from utils.question_list import POCQuestionList
 from openai_class import OpenAiClass
 
 class Survall():
@@ -10,6 +8,5 @@ class Survall():
         return cls.instance
     
     def setup(self, openai):
-        self.namespace = uuid.uuid4()
-        self.question_list = POCQuestionList(self.namespace)
+        self.question_list = POCQuestionList()
         self.openai = OpenAiClass(openai)

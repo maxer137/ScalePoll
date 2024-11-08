@@ -9,9 +9,13 @@
 `pip install -r requirements.txt`
 
 ### Running the code
-Run: `main.py`
+`python main.py`
 
 ### Query local backend
-In cmd run: `curl http://127.0.0.1:1337/get_question`
+#### Get a question
+In cmd: `curl http://127.0.0.1:1337/get_question`
 
-In browser run: `http://127.0.0.1:1337/get_question`
+In browser: `http://127.0.0.1:1337/get_question`
+
+#### Give a response
+In cmd: `curl --data "{\"question_uuid\": \"f843ba02-d1ab-4f10-8a70-503c72989c9d\", \"user_uuid\": \"a9b59649-e30f-4a87-b4cf-0e2730d9df5a\", \"answer_score\": 1, \"relevance_score\": 1, \"discussion": \"Why is this a question?\"}" http://127.0.0.1:1337/post_answer`

@@ -7,8 +7,7 @@ import Opinion from './components/Opinion.vue'
   </header>
 
   <main class="d-flex justify-content-between">
-
-        <Opinion />
+        <Opinion title="tests"/>
   </main>
 </template>
 

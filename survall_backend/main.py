@@ -5,9 +5,12 @@ from flask_restful import Api
 from openai import OpenAI
 from dotenv import load_dotenv
 
+from endpoints.questions_endpoint import RequestQuestion
+
+from survall import Survall
 from openai_singleton import OpenAiSingleton
 
-from endpoints.template_endpoint import TemplateEndpoint
+Survall().setup()
 
 # Load environment variables
 load_dotenv()
@@ -20,7 +23,10 @@ app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*"}})
 api = Api(app)
 
-api.add_resource(TemplateEndpoint, '/template_get')
+api.add_resource(RequestQuestion, '/get_question')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",debug=True, port=1337)
+
+
+        

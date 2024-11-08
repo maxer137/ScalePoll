@@ -8,16 +8,15 @@ from dotenv import load_dotenv
 from endpoints.questions_endpoint import RequestQuestion
 
 from survall import Survall
-from openai_singleton import OpenAiSingleton
-
-Survall().setup()
+from survall_backend.openai_class import OpenAiSingleton
 
 # Load environment variables
 load_dotenv()
 
 # Initialize OpenAI
 openai = OpenAI()
-OpenAiSingleton().setup(openai)
+
+Survall().setup(openai)
 
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*"}})

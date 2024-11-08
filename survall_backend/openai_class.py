@@ -1,15 +1,11 @@
-class OpenAiSingleton():
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(OpenAiSingleton, cls).__new__(cls)
-        return cls.instance
-    
+class OpenAiClass():
     def setup(self, client):
         self.client = client
 
         # this will change later when we know what we need as a system prompt
         self.system = """
-        You are a funny lad, give me a joke.
+        Act as a moderator for democratic discussions on controversial and popular topics.
+
         """
 
     def new_question_query(self):

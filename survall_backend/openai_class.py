@@ -14,9 +14,13 @@ class OpenAiClass():
         The generated question must be opinion based and not one that can be answered easily with a fact.
         """
 
-    def new_question_query(self, question, discussions, results_yes, results_no):
+    def new_question_query(self, question, answers):
 
-        request = "Generate a follow up question based on the following question: " + question + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes and " + str(results_no) + " that answered no."
+        discussions = [answer.discussion for answer in answers]
+        results_yes = len([answer for answer in answers if answer.answer_score == 1])
+        results_no = len([answer for answer in answers if answer.answer_score == -1])
+
+        request = "Generate a follow up question based on the following question: " + question.text + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes and " + str(results_no) + " that answered no."
         print("Request: ", request)
         # Create a reuqest to api and get the completion
         completion = self.client.chat.completions.create(

@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from endpoints.questions_endpoint import RequestQuestion
 
 from survall import Survall
-from survall_backend.openai_class import OpenAiSingleton
 
 # Load environment variables
 load_dotenv()

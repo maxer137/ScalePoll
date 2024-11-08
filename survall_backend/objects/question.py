@@ -1,15 +1,15 @@
-import json
 import uuid
 
+
 class Question():
-    def __init__(self, namespace, text):
+    def __init__(self, text):
         self.text = text
-        self.uuid = uuid.uuid5(namespace, self.text)
+        self.uuid = uuid.uuid4()
 
     def to_dict(self):
         return {
             "text": self.text,
-            "uuid": str(self.uuid)  # Convert UUID to a string for JSON compatibility
+            "uuid": str(self.uuid)
         }
 
     def to_json(self):

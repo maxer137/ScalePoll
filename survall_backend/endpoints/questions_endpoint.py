@@ -7,7 +7,7 @@ from objects.answer import Answer
 
 class RequestQuestion(Resource):
     def get(self):
-        question:Question = Survall().question_list.get_question()
+        question:Question = Survall().database.get_question()
 
         json_question = question.to_json()
 
@@ -19,7 +19,7 @@ class AnswerQuestion(Resource):
 
         answer:Answer = Answer.from_dict(data)
 
-        Survall().question_list.add_question(Question(answer.discussion))
+        Survall().database.add_question(Question(answer.discussion))
 
         print(answer.to_json())
 

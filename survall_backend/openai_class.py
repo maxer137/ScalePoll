@@ -12,9 +12,10 @@ class OpenAiClass():
         The generated questions must be clear, short and concise and easy to understand for general people.
         Do not add any pretext to the response, only provide the generated question.
         The generated question must be opinion based and not one that can be answered easily with a fact.
+        The generated question should be more specific than the original question, and does not become more general.
         """
 
-    def new_question_query(self, question, answers):
+    def follow_up_question_query(self, question, answers):
 
         discussions = [answer.discussion for answer in answers]
         results_yes = len([answer for answer in answers if answer.answer_score == 1])

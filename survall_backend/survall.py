@@ -1,4 +1,4 @@
-from survall_backend.utils.mock_database import MockDatabase
+from utils.mock_database import MockDatabase
 from openai_class import OpenAiClass
 
 class Survall():
@@ -8,7 +8,7 @@ class Survall():
         return cls.instance
     
     def setup(self, openai):
-        self.question_list = MockDatabase()
+        self.database = MockDatabase()
         self.openai = OpenAiClass(openai)
 
-        self.question_list._inject_mock_data()
+        self.database._inject_mock_data()

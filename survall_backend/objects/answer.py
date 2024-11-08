@@ -3,15 +3,8 @@ import uuid
 
 class Answer():
     def __init__(self, question_uuid, user_uuid, answer_score, relevance_score, discussion):
-        if question_uuid is None:
-            self.question_uuid = uuid.uuid4()
-        else:
-            self.question_uuid = uuid.UUID(question_uuid)
-
-        if user_uuid is None:
-            self.user_uuid = uuid.uuid4()
-        else:
-            self.user_uuid = uuid.UUID(user_uuid)
+        self.question_uuid = question_uuid
+        self.user_uuid = user_uuid
 
         self.answer_score = answer_score
         self.relevance_score = relevance_score

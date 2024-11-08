@@ -6,8 +6,9 @@ from objects.question import Question
 
 class RequestOpenAi(Resource):
     def get(self):
-        question:Question = Survall().question_list.get_question()
+        # This is a mock implementation to generate a follow up question
+        question:Question = Survall().database.get_question()
+        
+        follow_up_question = Survall().openai.follow_up_question_query(question,Survall().database.get_related_answers(question))
 
-        json_question = question.to_json()
-
-        return json_question, 200
+        return follow_up_question, 200

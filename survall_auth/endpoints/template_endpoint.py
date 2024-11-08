@@ -11,10 +11,11 @@ class TemplateEndpoint(Resource):
         return "Test", 418
 
 class Login(Resource):
-    def get(self):
+    def post(self):
         # Example usage:
         secret_key = os.getenv('SURVALL_SECRET_KEY')  # Keep this key secure!
-        user = request.args.get('user')
+        print(request.get_json())
+        user = '0'
         if user is None:
             return "not a valid login", 400
         if not user.isnumeric():

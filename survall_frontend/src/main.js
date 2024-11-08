@@ -7,9 +7,14 @@ import './scss/styles.scss'
 import * as bootstrap from 'bootstrap'
 
 
-const DOMAIN_NAME = "http://127.0.0.1:1337/"
-
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 
-createApp(App).mount('#app')
+
+const pinia = createPinia()
+const app = createApp(App)
+
+
+app.use(pinia)
+app.mount('#app')

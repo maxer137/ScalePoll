@@ -12,4 +12,4 @@ class Survall():
     def setup(self, openai):
         self.namespace = uuid.uuid4()
         self.question_list = POCQuestionList(self.namespace)
-        self.openai = OpenAiClass().setup(openai)
+        self.openai = OpenAiClass(openai)

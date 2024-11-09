@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import {useLoginStore} from "@/stores/counter.js";
+import {useLoginStore} from "@/stores/login.js";
 
 const store = useLoginStore()
 
@@ -8,7 +8,8 @@ let username = ref('')
 
 async function login(event) {
   event.preventDefault()
-  store.login(username.value)
+  console.log(username.value)
+  await store.login(username.value)
 }
 </script>
 

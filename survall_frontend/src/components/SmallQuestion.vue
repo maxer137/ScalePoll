@@ -1,56 +1,41 @@
 <script setup>
 
-import {ref} from 'vue'
 
-const props = defineProps({
-  title: String,
-  description: String,
-  result: Array(3),
-  relevance: Number
-})
-
-
-const { title, description, result, relevance} = toRefs(props);
-
-let vote_value = ref(null)
-let relevance_value = ref(3)
-
-let discussion_value = ref('')
-let fore = ref(20)
-let neutral = ref(30)
-let against = ref(50)
-
-let output = result.reduce((accumulator, currentValue) => {
-  return accumulator + currentValue
-},0)
-
-
+const props = defineProps(['question'])
 </script>
 
 <template>
-  <div class="card">
+  <div class="card mb-3" style="width: 100%;">
     <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
-      <p class="card-text">{{ description }}</p>
+      <h5 class="card-title">{{ question['question'] }}</h5>
+      <p class="card-text">{{ question['description'] }}</p>
     </div>
-    <!--Buttons-->
     <div class="card-footer">
-      <div>
-        <h5>General opinion</h5>
-        <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuemin="0"
-             aria-valuemax="100">
-          <div class="progress-bar bg-danger" :style="{'width': against/output*100 + '%'}">{{ result[2] }}%</div>
-          <div class="progress-bar bg-secondary" :style="{'width': neutral/output*100 + '%'}">{{ result[1] }}%</div>
-          <div class="progress-bar bg-success" :style="{'width': fore/output*100 + '%'}" id="progress_fore">{{ result[0] }}%</div>
+      <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75"
+           aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-danger"
+             :style="{'width': question['negative']/question['answers_count']*100 + '%'}">{{
+            question['negative']
+          }}
         </div>
-        <div class="d-flex flex-row">
-          <h5 class="text-danger translate-middle-x position-absolute end-0">Disagree</h5>
-          <h5 class="text-secondary translate-middle-x position-absolute start-50">Neutral</h5>
-          <h5 class="text-success">Agree</h5>
+        <div class="progress-bar bg-secondary"
+             :style="{'width': (question['neutral'])/question['answers_count']*100 + '%'}">{{
+            question['neutral']
+          }}
         </div>
-        <h5>General relevance</h5>
-        <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
+        <div class="progress-bar bg-success"
+             :style="{'width': question['positive']/question['answers_count']*100 + '%'}" id="progress_fore">
+          {{ question['positive'] }}
+        </div>
       </div>
+      <div class="d-flex flex-row">
+        <p class="text-danger ">No</p>
+        <p class="text-secondary translate-middle-x position-absolute start-50">Neutral</p>
+        <p class="text-success translate-middle-x position-absolute end-0">Yes</p>
+      </div>
+      <h5>General relevance</h5>
+      <input type="range" class="form-range" min="1" max="5" step="0.1"
+             :value="question['relevance_sum'] / question['answers_count']" disabled/>
     </div>
   </div>
 </template>

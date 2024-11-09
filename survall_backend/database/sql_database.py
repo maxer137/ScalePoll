@@ -43,6 +43,15 @@ class SQLDatabase():
 
         return questions
 
+    def get_iterated_question(self, iteration):
+        questions = self.session.query(Question).all()
+
+        # Get the question based on the iteration and modulus of the total number of questions
+        question_index = iteration % len(questions) if questions else None
+        
+        # Return the question if available
+        return questions[question_index] if question_index is not None else None
+
     def get_random_question(self):
         return self.session.query(Question).order_by(func.random()).first()
     

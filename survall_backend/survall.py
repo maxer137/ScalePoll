@@ -16,6 +16,8 @@ class Survall():
         self.database = SQLDatabase(inject_mock_data=inject_mock_data)
         self.openai = OpenAiClass(openai)
 
+        self.question_iteration = 0
+
     def register_authentication(self, authentication:Authentication):
         self.database.register_authentication(authentication)
 
@@ -28,10 +30,8 @@ class Survall():
     def get_question(self) -> Question:
         # Get a question a specific user UUID hasn't answered yet
         # If relevant generate a new question
-
-        # TODO require UUID
-
-        return self.database.get_random_question()
+        self.question_iteration += 1
+        return self.database.get_iterated_question(self.question_iteration)
     
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
         if not self.database.check_if_user_answered_question(user_question_pair=user_question_pair):

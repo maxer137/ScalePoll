@@ -34,7 +34,7 @@ class AnswerQuestion(Resource):
 
         print(related_question)
 
-        return related_question, 200
+        return related_question.to_json(), 200
     
 class PreviousQuestions(Resource):
     def get(self):

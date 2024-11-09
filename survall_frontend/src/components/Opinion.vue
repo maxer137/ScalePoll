@@ -1,11 +1,15 @@
 <script setup>
 import {ref} from 'vue'
-import * as Bootstrap from "bootstrap";
 import {useLoginStore} from "@/stores/login.js";
+import * as Bootstrap from "bootstrap";
+
 
 const store = useLoginStore()
 
+const skipping = import.meta.env.VITE_PUBLIC_RUN === 'true'
+
 const props = defineProps(['question'])
+const emit = defineEmits(['nextquestion'])
 
 const result = ref(false)
 let vote_value = ref(null)
@@ -14,35 +18,42 @@ let relevance_value = ref(3)
 let discussion_value = ref('')
 
 function next_question() {
+  emit('nextquestion')
   response_done.value = true
+
 }
 
-let relevance = ref(3)
 let response_done = ref(false)
 console.log(props.question.uuid)
 let vote_stats = ref({})
 
 async function submit_vote() {
   result.value = !result.value
-  // const collapseElementList = document.querySelectorAll('#results-collapse')
-  // const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
-  // console.log(collapseList)
-  vote_stats = store.submit_vote(props.question.uuid,
+
+  const collapseElementList = document.querySelectorAll('#results-collapse')
+  const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
+  console.log(collapseList)
+
+  vote_stats.value = await store.submit_vote(props.question.uuid,
       store.token,
       vote_value.value,
       parseInt(relevance_value.value),
       discussion_value.value,)
-
-  relevance = vote_stats['']
   console.log(await vote_stats)
 }
 
-function flew() {
-  flewaway.value = true
-  console.log(flewaway)
+function flew(e) {
+  console.log(e.animationName)
+  console.log(e.animationName)
+  if (e.animationName.startsWith('flyaway')) {
+    if (skipping) {
+      next_question()
+    } else {
+      flewaway.value = true
+    }
+    console.log(flewaway)
+  }
 }
-
-addEventListener("keydown", (event) => {});
 
 onkeydown = (event) => {
   if (event.key === 'a') {
@@ -54,11 +65,11 @@ onkeydown = (event) => {
   }
 };
 
-
 </script>
 
 <template>
-  <div :class="{card: true, flyaway: vote_value!=null}" v-if="!flewaway" style="width: 100%;" @animationend="flew">
+  <div :class="{card: true, flyaway: vote_value!=null, 'fly-in': vote_value==null}" v-if="!flewaway"
+       style="width: 100%;" @animationend="flew">
     <div class="card-body">
       <h5 class="card-title">{{ question.question }}</h5>
       <p class="card-text">{{ question.description }}</p>
@@ -68,17 +79,17 @@ onkeydown = (event) => {
       <div>
         <label class="form-label">Do you agree with the statement?</label>
         <div class="d-flex justify-content-between">
-          <input type="radio" class="btn-check" name="options" id="agree" autocomplete="off" value="-1"
+          <input type="radio" class="btn-check" name="options" id="disagree" autocomplete="off" value="-1"
                  v-model="vote_value">
-          <label class="btn btn-outline-danger" for="agree">Disagree</label>
+          <label class="btn btn-outline-danger" for="disagree">Disagree</label>
 
           <input type="radio" class="btn-check" name="options" id="unsure" autocomplete="off" value="0"
                  v-model="vote_value">
           <label class="btn btn-outline-primary" for="unsure">Unsure</label>
 
-          <input type="radio" class="btn-check" name="options" id="disagree" autocomplete="off" value="1"
+          <input type="radio" class="btn-check" name="options" id="agree" autocomplete="off" value="1"
                  v-model="vote_value">
-          <label class="btn btn-outline-success" for="disagree">Agree</label>
+          <label class="btn btn-outline-success" for="agree">Agree</label>
         </div>
       </div>
     </div>
@@ -88,7 +99,7 @@ onkeydown = (event) => {
       <h5 class="card-title">Feedback</h5>
       <div>
         <label class="form-label">How relevant is this question</label>
-        <div  class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between">
           <label class="form-text">Least relevant</label>
           <label class="form-text">Most relevant</label>
         </div>
@@ -101,27 +112,38 @@ onkeydown = (event) => {
                v-model="discussion_value">
       </div>
       <div class="center">
-      <button type="button" class="btn btn-success" :disabled="result" @click="submit_vote()">Submit</button>
+        <button type="button" class="btn btn-success" :disabled="result" @click="submit_vote()">Submit</button>
       </div>
     </div>
 
     <!--      Results-->
     <div class="card-footer collapse" id="results-collapse">
-      <div>
-        <h5>General opinion</h5>
-        <p>{{ question }}</p>
-        <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-bar bg-danger" :style="{'width': vote_stats[''] + '%'}">{{vote_stats['']}}%</div>
-          <div class="progress-bar bg-secondary" :style="{'width': vote_stats[''] + '%'}">{{vote_stats['']}}%</div>
-          <div class="progress-bar bg-success" :style="{'width': vote_stats[''] + '%'}" id="progress_fore">{{vote_stats['']}}%</div>
+      <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75"
+           aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-danger"
+             :style="{'width': vote_stats['negative']/vote_stats['answers_count']*100 + '%'}">{{
+            vote_stats['negative']
+          }}
         </div>
-        <div class="d-flex flex-row">
-          <p class="text-danger ">No</p>
-          <p class="text-secondary translate-middle-x position-absolute start-50">Neutral</p>
-          <p class="text-success translate-middle-x position-absolute end-0">Yes</p>
+        <div class="progress-bar bg-secondary"
+             :style="{'width': (vote_stats['neutral'])/vote_stats['answers_count']*100 + '%'}">{{
+            vote_stats['neutral']
+          }}
         </div>
-        <h5>General relevance</h5>
-        <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
+        <div class="progress-bar bg-success"
+             :style="{'width': vote_stats['positive']/vote_stats['answers_count']*100 + '%'}" id="progress_fore">
+          {{ vote_stats['positive'] }}
+        </div>
+      </div>
+      <div class="d-flex flex-row">
+        <p class="text-danger ">No</p>
+        <p class="text-secondary translate-middle-x position-absolute start-50">Neutral</p>
+        <p class="text-success translate-middle-x position-absolute end-0">Yes</p>
+      </div>
+      <h5>General relevance</h5>
+      <input type="range" class="form-range" min="1" max="5" step="0.1"
+             :value="vote_stats['relevance_sum'] / vote_stats['answers_count']" disabled/>
+      <div class="center">
         <button type="button" class="btn btn-success" @click="next_question()">Next</button>
       </div>
     </div>
@@ -160,7 +182,7 @@ onkeydown = (event) => {
   20% {
     transform: translate(0, 0) scale(1);
   }
-  40% {
+  60% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
   }

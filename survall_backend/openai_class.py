@@ -21,12 +21,12 @@ class OpenAiClass():
         results_yes = question.amount_positive
         results_no = question.amount_negative
         results_neutral = question.amount_neutral
-        
+
         request = "Generate a follow up question based on the following question: " + question.text + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes, " + str(results_no) + " that answered no, and " + str(results_neutral) + " that answered neutrally."
         print("Request: ", request)
         # Create a reuqest to api and get the completion
         completion = self.client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": self.system},
                 {"role": "user", "content": request}

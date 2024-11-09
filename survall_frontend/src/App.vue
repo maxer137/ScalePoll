@@ -16,7 +16,7 @@ store.logged_in = true
 
   <main class="d-flex justify-content-between">
     <Login v-if="!store.logged_in"></Login>
-    <Opinion v-if=store.logged_in :question="question"/>
+    <Opinion v-if=store.logged_in />
   </main>
 </template>
 

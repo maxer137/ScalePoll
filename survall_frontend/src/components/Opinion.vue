@@ -17,7 +17,7 @@ let discussion_value = ref('')
 function next_question() {
   //request_question()
   response_done.value = true
-  // show_question({'question': "hi, test", 'description': 'hi another test'})
+  request_question()
   // result.value = false
   // vote_value = ref(null)
   // flewaway = ref(false)
@@ -33,18 +33,19 @@ async function request_question() {
     user_hash: store.token,
   }
   console.log(body)
-  // let response = await fetch(`${DOMAIN_NAME}/response`, {
-  //   method: 'POST',
-  //   body: JSON.stringify(body),
-  // })
-  // console.log(await response.text())
-  // show_question(await response.json())
+  let response = await fetch(`http://127.0.0.1:1337/get_question`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+  console.log(await response.text())
+  show_question(await response)
 }
 
 async function show_question(received) {
   //question uuid
   //question
   //desription
+  console.log(received)
   question = received['question']
   description = received['description']
 
@@ -73,7 +74,7 @@ async function submit_vote() {
   const collapseElementList = document.querySelectorAll('#results-collapse')
   const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
   console.log(collapseList)
-  let response = await fetch(`http://127.0.0.1:1337/get_question`, {
+  let response = await fetch(`http://127.0.0.1:1337/post_answer`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Authorization': 'TODO '},// + store.token},
     body: JSON.stringify(body),
@@ -87,16 +88,16 @@ async function show_results(results) {
   //question uuid
   //fore, against, neutral
   //relevance
+  console.log(results)
+  fore = results['fore']
+  against = results['against']
+  neutral = results['neutral']
+  relevance = results['relevance']
 
-  //fore = results['fore']
-  //against = results['against']
-  //neutral = results['neutral']
-  //relevance = results['relevance']
-
-  fore = ref(30)
-  neutral = ref(30)
-  against = ref(40)
-  relevance = ref(3.4)
+  // fore = ref(30)
+  // neutral = ref(30)
+  // against = ref(40)
+  // relevance = ref(3.4)
 }
 
 function flew() {
@@ -104,7 +105,7 @@ function flew() {
   console.log(flewaway)
 }
 
-show_question('hi')
+request_question()
 </script>
 
 <template>
@@ -147,13 +148,12 @@ show_question('hi')
       </div>
       <div>
         <label class="form-label">Add your discussion points</label>
-        <input class="form-control" id="discussion" placeholder="Add extra inside on your choice"
+        <input class="form-control" id="discussion" placeholder="(Optional)"
                v-model="discussion_value">
       </div>
-      <div>
-        <label class="form-label">When ready</label>
-      </div>
+      <div class="center">
       <button type="button" class="btn btn-success" :disabled="result" @click="submit_vote()">Submit</button>
+      </div>
     </div>
 
     <!--      Results-->
@@ -173,13 +173,25 @@ show_question('hi')
         </div>
         <h5>General relevance</h5>
         <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
-        <button type="button" class="btn btn-success" @click="next_question()">Next</button>
+        <div class="center">
+          <button type="button" class="btn btn-success" @click="next_question()">Next</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+
+.btn-success {
+  margin-top: 10px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* Styling for the div */
 .flyaway {

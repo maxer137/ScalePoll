@@ -19,23 +19,14 @@ function next_question() {
 
 let relevance = ref(3)
 let response_done = ref(false)
-
+console.log(props.question.uuid)
 let vote_stats = ref({})
 
 async function submit_vote() {
   result.value = !result.value
-  const collapseElementList = document.querySelectorAll('#results-collapse')
-  const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
-  console.log(collapseList)
-  let response = await fetch(`http://127.0.0.1:1337/post_answer`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json', 'Authorization': 'TODO '},// + store.token},
-    body: JSON.stringify(body),
-  })
-  console.log(await response.text())
-  show_results(await response.json())
-
-
+  // const collapseElementList = document.querySelectorAll('#results-collapse')
+  // const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
+  // console.log(collapseList)
   vote_stats = store.submit_vote(props.question.uuid,
       store.token,
       vote_value.value,
@@ -51,6 +42,19 @@ function flew() {
   console.log(flewaway)
 }
 
+addEventListener("keydown", (event) => {});
+
+onkeydown = (event) => {
+  if (event.key === 'a') {
+    vote_value.value = 1
+  } else if (event.key === 'd') {
+    vote_value.value = -1
+  } else if (event.key === 'u') {
+    vote_value.value = 0
+  }
+};
+
+
 </script>
 
 <template>
@@ -64,7 +68,7 @@ function flew() {
       <div>
         <label class="form-label">Do you agree with the statement?</label>
         <div class="d-flex justify-content-between">
-          <input type="radio" class="btn-check" name="options" id="agree" autocomplete="off" value="1"
+          <input type="radio" class="btn-check" name="options" id="agree" autocomplete="off" value="-1"
                  v-model="vote_value">
           <label class="btn btn-outline-danger" for="agree">Disagree</label>
 
@@ -72,7 +76,7 @@ function flew() {
                  v-model="vote_value">
           <label class="btn btn-outline-primary" for="unsure">Unsure</label>
 
-          <input type="radio" class="btn-check" name="options" id="disagree" autocomplete="off" value="-1"
+          <input type="radio" class="btn-check" name="options" id="disagree" autocomplete="off" value="1"
                  v-model="vote_value">
           <label class="btn btn-outline-success" for="disagree">Agree</label>
         </div>

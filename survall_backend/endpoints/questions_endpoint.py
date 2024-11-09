@@ -20,6 +20,10 @@ class AnswerQuestion(Resource):
     def post(self):
         data = request.get_json()
 
+        authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
+        if authentication is None: return 401
+
+        data['user_uuid'] = authentication.user_hash
         answer:Answer = Answer.from_dict(data)
         user_question_pair:UserQuestionPair = UserQuestionPair.from_dict(data)
 

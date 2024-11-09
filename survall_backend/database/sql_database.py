@@ -5,8 +5,9 @@ from sqlalchemy.orm import sessionmaker
 
 from objects.answer import Answer
 from objects.user_question import UserQuestionPair
-
 from objects.question import Question
+from objects.authentication import Authentication
+
 from database.sql_base import Base
 
 class SQLDatabase():
@@ -24,6 +25,15 @@ class SQLDatabase():
 
         if inject_mock_data:
             self.inject_mock_data() 
+
+
+    def register_authentication(self, authentication:Authentication):
+        self.session.add(authentication)
+        self.session.commit()
+
+    def check_authentication(self, session_token):
+        return self.session.query(Authentication).filter(Authentication.session_token == session_token).first()
+
 
     def get_random_question(self):
         return self.session.query(Question).order_by(func.random()).first()

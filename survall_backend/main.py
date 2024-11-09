@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from survall import Survall
 from endpoints.openai_endpoint import RequestOpenAi
 from endpoints.questions_endpoint import AnswerQuestion, RequestQuestion
+from endpoints.login_endpoint import ExampleAuthenticate, Login
 
 # Load environment variables
 load_dotenv()
@@ -36,6 +37,9 @@ api = Api(app)
 api.add_resource(RequestQuestion, '/get_question')
 api.add_resource(AnswerQuestion, '/post_answer')
 api.add_resource(RequestOpenAi, '/get_openai')
+api.add_resource(Login, '/login')
+api.add_resource(ExampleAuthenticate, '/authentication_example')
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",debug=True, port=1337)

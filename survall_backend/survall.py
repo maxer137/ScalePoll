@@ -2,6 +2,7 @@ from objects.answer import Answer
 from objects.question import Question
 
 from objects.user_question import UserQuestionPair
+from objects.authentication import Authentication
 from database.sql_database import SQLDatabase
 from openai_class import OpenAiClass
 
@@ -14,6 +15,12 @@ class Survall():
     def setup(self, openai, inject_mock_data):
         self.database = SQLDatabase(inject_mock_data=inject_mock_data)
         self.openai = OpenAiClass(openai)
+
+    def register_authentication(self, authentication:Authentication):
+        self.database.register_authentication(authentication)
+
+    def authenticate(self, session_token):
+        return self.database.check_authentication(session_token)
 
     def get_question(self) -> Question:
         # Get a question a specific user UUID hasn't answered yet

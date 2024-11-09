@@ -7,12 +7,32 @@ const props = defineProps({
 
 const result = ref(false)
 
-async function vote(opinion) {
+var vote_value = 0
+
+function change_vote(value) {
+  vote_value = value
+  console.log(vote_value)
+}
+
+var relevance_value = 0
+function set_relevance(value) {
+  console.log(value)
+  relevance_value = value
+}
+
+async function submit_vote() {
   let body = {
-    vote: opinion,
+    question_uuid: 0,
+    user_uuid: 0,
+    answer_score: vote_value,
+    relevance_score: relevance_value,
+    discussion_field: 0,
   }
   result.value = !result.value
-  // let response = await fetch(`${DOMAIN}/response`, {
+  console.log(vote_value)
+  console.log(relevance_value)
+  console.log(body)
+  // let response = await fetch(`${DOMAIN_NAME}/response`, {
   //   method: 'POST',
   //   body: JSON.stringify(body),
   // })
@@ -33,10 +53,19 @@ async function show_results(results) {
         <p class="card-text">Background information on topic</p>
       </div>
 <!--      Buttons-->
-      <div v-if="!result" class="card-footer d-flex justify-content-between">
-        <button type="button" class="btn btn-danger" @click="vote(-1)">disagree</button>
-        <button type="button" class="btn btn-primary" @click="vote(0)">unsure</button>
-        <button type="button" class="btn btn-success" @click="vote(1)">agree</button>
+      <div v-if="!result" class="card-footer d-flex flex-column">
+        <h5>How relevant is this question</h5>
+        <input type="range" class="form-range" min="0" max="5" id="relevance" @change="set_relevance()" />
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" @click="change_vote(-1)">disagree</button>
+          <button type="button" class="btn btn-primary" @click="change_vote(0)">unsure</button>
+          <button type="button" class="btn btn-success" @click="change_vote(1)">agree</button>
+        </div>
+        <label class="form-label">Add your discussion points</label>
+        <input class="form-control" id="discussion" placeholder="Add extra inside on your choice">
+
+        <label class="form-label">When ready</label>
+        <button type="button" class="btn btn-success" @click="submit_vote()">Submit</button>
       </div>
 <!--      Results-->
       <div v-else class="card-footer">

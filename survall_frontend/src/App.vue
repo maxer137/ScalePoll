@@ -28,10 +28,13 @@ store.$subscribe((mutation, state) => {
 </script>
 
 <template>
-  <header class="d-flex w-100 justify-content-end align-items-center border-bottom">
-    <button type="button" class="btn btn-primary m-2" @click="state=0">Vote</button>
-    <button type="button" class="btn btn-primary m-2" @click="state=1">Your History</button>
-    <button type="button" class="btn btn-primary m-2" @click="state=2">Overview</button>
+  <header class="d-flex w-100 justify-content-between border-bottom">
+    <h1 class="m-2 d-flex"><img src="./assets/logo.png" style="height: 3rem" alt="logo"/>Survall</h1>
+    <div class="d-flex w-100 justify-content-end align-items-center border-bottom">
+      <button type="button" class="btn btn-primary m-2" @click="state=0">Vote</button>
+      <button type="button" class="btn btn-primary m-2" @click="state=1">Your History</button>
+      <button type="button" class="btn btn-primary m-2" @click="state=2">Overview</button>
+    </div>
   </header>
 
   <main class="d-flex flex-grow justify-content-between align-items-center h-100">

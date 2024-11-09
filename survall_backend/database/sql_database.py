@@ -129,10 +129,12 @@ class SQLDatabase():
         else:
             print("ERROR: invalid vote, ignoring")
 
+
         if answer.discussion != '' and answer.discussion is not None:
             question.discussion_count += 1
 
         question.relevance_sum += int(answer.relevance_score)
+        question.threshold_sum += int(answer.relevance_score)
 
         self.session.add(question)
         self.session.add(answer)

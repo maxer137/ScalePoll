@@ -43,17 +43,17 @@ class SQLDatabase():
     def get_previous_questions(self, authentication:Authentication):
         question_uuids = self.session.query(UserQuestionPair.question_uuid).filter_by(user_uuid=authentication.user_hash)
         unique_question_uuids = [uuid[0] for uuid in question_uuids]
-        questions = self.session.query(Question).filter(Question.uuid.in_(unique_question_uuids)).all()
+        questions = self.session.query(Question).filter(Question.uuid.in_(unique_question_uuids)).order_by(Question.creation_time).all()
 
         return questions
     
     def get_related_questions(self, question:Question):
-        questions = self.session.query(Question).filter(Question.root_question_uuid == question.root_question_uuid).all()
+        questions = self.session.query(Question).filter(Question.root_question_uuid == question.root_question_uuid).order_by(Question.creation_time).all()
 
         return questions
 
     def get_iterated_question(self, iteration):
-        questions = self.session.query(Question).all()
+        questions = self.session.query(Question).order_by(Question.creation_time).all()
 
         # Get the question based on the iteration and modulus of the total number of questions
         question_index = iteration % len(questions) if questions else None

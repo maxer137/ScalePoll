@@ -1,6 +1,7 @@
+from datetime import datetime, timezone
 import uuid
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database.sql_base import Base
@@ -35,7 +36,10 @@ class Question(Base):
     answers_count = Column(Integer)
     discussion_count = Column(Integer)
 
-    def __init__(self, question, description, parent_question_uuid=None, root_question_uuid=None):
+    creation_time = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))  # Set at creation
+    close_time = Column(DateTime, nullable=True)  # Set when closed
+
+    def __init__(self, question, description, parent_question_uuid=None, root_question_uuid=None, creation_time=None):
         self.uuid = str(uuid.uuid4())
 
         self.question = question
@@ -51,8 +55,24 @@ class Question(Base):
         self.answers_count = 0
         self.discussion_count = 0
 
+        self.creation_time = creation_time or datetime.now(timezone.utc)
+
     def get_uuid(self):
         return str(self.uuid)
+    
+    def close(self):
+        """Set the close time to the current timestamp."""
+        self.close_time = datetime.now(timezone.utc)
+
+    def get_creation_time(self):
+        if self.creation_time is not None:
+            return self.creation_time.isoformat()
+        return None
+
+    def get_close_time(self):
+        if self.close_time is not None:
+            return self.close_time.isoformat()
+        return None    
 
     def to_dict(self):
         return {
@@ -64,7 +84,9 @@ class Question(Base):
             "negative":self.amount_negative,
             "relevance_sum":self.relevance_sum,
             "answers_count":self.answers_count,
-            "discussion_count":self.discussion_count
+            "discussion_count":self.discussion_count,
+            "creation_time": self.get_creation_time(),
+            "close_time": self.get_close_time()
         }
     
     def to_dict_short(self):
@@ -76,7 +98,6 @@ class Question(Base):
 
     def to_json(self):
         return self.to_dict()
-
 
     def calculate_threshold(self):
         return self.discussion_count * (self.relevance_sum/self.answers_count)
@@ -92,7 +113,9 @@ class Question(Base):
             f"negative={self.amount_negative}, "
             f"relevance_sum={self.relevance_sum}, "
             f"answers_count={self.answers_count}, "
-            f"discussion_count={self.discussion_count})"
+            f"discussion_count={self.discussion_count}), "
+            f"creation_time={self.get_creation_time()}, "
+            f"close_time={self.get_close_time()})"
         )
     
     @classmethod

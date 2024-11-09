@@ -1,58 +1,23 @@
 <script setup>
-
 import {ref} from 'vue'
 import * as Bootstrap from "bootstrap";
 import {useLoginStore} from "@/stores/login.js";
 
 const store = useLoginStore()
 
+const props = defineProps(['question'])
+
 const result = ref(false)
 let vote_value = ref(null)
 let flewaway = ref(false)
-
 let relevance_value = ref(3)
-
 let discussion_value = ref('')
 
 function next_question() {
-  //request_question()
   response_done.value = true
-  request_question()
-  // result.value = false
-  // vote_value = ref(null)
-  // flewaway = ref(false)
-  // relevance_value = ref(3)
-  // discussion_value = ref('')
 }
 
-let question = ref('')
 let description = ref('')
-
-async function request_question() {
-  let body = {
-    user_hash: store.token,
-  }
-  console.log(body)
-  let response = await fetch(`http://127.0.0.1:1337/get_question`, {
-    method: 'POST',
-    body: JSON.stringify(body),
-  })
-  console.log(await response.text())
-  show_question(await response)
-}
-
-async function show_question(received) {
-  //question uuid
-  //question
-  //desription
-  console.log(received)
-  question = received['question']
-  description = received['description']
-
-  // question = 'Ronald is the best boomer'
-  // description = 'He is old'
-}
-
 let fore = ref(0)
 let neutral = ref(0)
 let against = ref(0)
@@ -84,20 +49,10 @@ async function submit_vote() {
 }
 
 async function show_results(results) {
-  // { for: 123, against: 2}
-  //question uuid
-  //fore, against, neutral
-  //relevance
-  console.log(results)
-  fore = results['fore']
-  against = results['against']
-  neutral = results['neutral']
-  relevance = results['relevance']
-
-  // fore = ref(30)
-  // neutral = ref(30)
-  // against = ref(40)
-  // relevance = ref(3.4)
+  fore = ref(30)
+  neutral = ref(30)
+  against = ref(40)
+  relevance = ref(3.4)
 }
 
 function flew() {
@@ -105,14 +60,13 @@ function flew() {
   console.log(flewaway)
 }
 
-request_question()
 </script>
 
 <template>
   <div :class="{card: true, flyaway: vote_value!=null}" v-if="!flewaway" style="width: 100%;" @animationend="flew">
     <div class="card-body">
-      <h5 class="card-title">{{ question }}</h5>
-      <p class="card-text">{{ description }}</p>
+      <h5 class="card-title">{{ question.question }}</h5>
+      <p class="card-text">{{ question.description }}</p>
     </div>
     <!--Buttons-->
     <div class="form card-footer d-flex flex-column">

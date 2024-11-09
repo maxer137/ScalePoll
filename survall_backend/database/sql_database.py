@@ -10,6 +10,8 @@ from objects.authentication import Authentication
 
 from database.sql_base import Base
 
+
+
 class SQLDatabase():
     def __init__(self, DATABASE_NAME='survall.db', inject_mock_data=True):
         # Setup the SQLite engine
@@ -54,16 +56,33 @@ class SQLDatabase():
         # else :
         self.session.add(question)
         self.session.commit()
-        
+    
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
         # TODO update question statistics
+        question = self.get_question_of_answer(answer)
+        question.answers_count += 1
+        if answer.answer_score == -1:
+            question.amount_negative += 1
+        elif answer.answer_score == 0:
+            question.amount_neutral += 1
+        elif answer.answer_score == 1:
+            question.amount_positive += 1
+        else:
+            print("ERROR: invalid vote, ignoring")
 
+        if answer.discussion != '' and answer.discussion is not None:
+            question.discussion_count += 1
+
+        self.session.add(question)
         self.session.add(answer)
         self.session.add(user_question_pair)
         self.session.commit()
 
     def get_answers_of_question(self, question):
         return self.session.query(Answer).filter(Answer.question_uuid == question.uuid).all()
+
+    def get_question_of_answer(self, answer):
+        return self.session.query(Question).filter(Question.uuid == answer.question_uuid).first()
 
     # Example of querying the database
     def get_answer_by_uuid(self, answer_uuid):

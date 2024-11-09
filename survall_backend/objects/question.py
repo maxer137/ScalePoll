@@ -33,6 +33,7 @@ class Question(Base):
     amount_negative = Column(Integer)
     relevance_sum = Column(Integer)
     answers_count = Column(Integer)
+    discussion_count = Column(Integer)
 
     def __init__(self, question, description):
         self.uuid = str(uuid.uuid4())
@@ -48,6 +49,7 @@ class Question(Base):
         self.amount_negative = 0
         self.relevance_sum = 0
         self.answers_count = 0
+        self.discussion_count = 0
 
     def get_uuid(self):
         return str(self.uuid)
@@ -61,3 +63,7 @@ class Question(Base):
 
     def to_json(self):
         return self.to_dict()
+
+
+    def calculate_threshold(self):
+        return self.discussion_count * (self.relevance_sum/self.answers_count)

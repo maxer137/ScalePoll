@@ -71,7 +71,7 @@ class SQLDatabase():
         # else :
         if question.root_question_uuid is None:
             question.root_question_uuid = question.uuid
-            
+
         self.session.add(question)
         self.session.commit()
     
@@ -145,7 +145,6 @@ class SQLDatabase():
             question_uuid=mock_question.get_uuid()
         )
 
-        self.save_question(question=mock_question)
         self.save_answer(answer=mock_answer, user_question_pair=mock_user_question_pair)
 
         mock_answer = Answer(
@@ -163,7 +162,6 @@ class SQLDatabase():
             question_uuid=mock_question.get_uuid()
         )
 
-        self.save_question(question=mock_question)
         self.save_answer(answer=mock_answer, user_question_pair=mock_user_question_pair)
 
         mock_answer = Answer(
@@ -181,8 +179,43 @@ class SQLDatabase():
             question_uuid=mock_question.get_uuid()
         )
 
-        self.save_question(question=mock_question)
         self.save_answer(answer=mock_answer, user_question_pair=mock_user_question_pair)
+
+        mock_question_2 = Question("Do you support the legalization of recreational cannabis?","Some believe cannabis should be legal for adults to use recreationally, while others are concerned about potential health and social impacts.")
+        self.save_question(question=mock_question_2)
+
+        mock_question_3 = Question("Do you believe governments should limit immigration?","Supporters of immigration limits argue it can protect jobs and resources, while opponents believe it reduces cultural diversity and compassion.")
+        self.save_question(question=mock_question_3)
+
+        mock_question_4 = Question("Should school uniforms be mandatory in public schools?","Proponents argue uniforms promote equality and reduce bullying, while opponents feel they restrict individual expression.")
+        self.save_question(question=mock_question_4)
+
+        mock_question_5 = Question("Do you support raising taxes on the wealthy to reduce income inequality?","Some see taxing the wealthy more as a fair way to address income gaps, while others worry it discourages economic growth and investment.")
+        self.save_question(question=mock_question_5)
+
+        mock_question_6 = Question("Is climate change a result of human activity?","Scientists have linked human actions to climate change, but some believe natural factors are more significant.")
+        self.save_question(question=mock_question_6)
+
+        mock_question_7 = Question("Should there be a universal basic income for all citizens?"," Advocates believe a universal income could reduce poverty, while critics worry about the cost and its effects on work motivation.")
+        self.save_question(question=mock_question_7)
+
+        mock_question_8 = Question("Should social media companies regulate misinformation on their platforms?","Some feel it’s essential to prevent the spread of false information, while others argue it restricts free speech.")
+        self.save_question(question=mock_question_8)
+
+        mock_question_9 = Question("Is animal testing for scientific research justified?","Proponents believe it’s crucial for medical advances, while critics feel it’s unethical to subject animals to testing.")
+        self.save_question(question=mock_question_9)
+
+        mock_question_10 = Question("Do you believe artificial intelligence (AI) is a threat to human jobs?","Some believe AI will replace many jobs, while others think it will create new opportunities.")
+        self.save_question(question=mock_question_10)
+
+        mock_question_11 = Question("Should there be stricter regulations on gun ownership?","Advocates argue that stricter gun laws could reduce violence, while opponents believe it infringes on personal freedoms.")
+        self.save_question(question=mock_question_11)
+
+        mock_question_12 = Question("Do you think violent video games increase aggressive behavior in young people?","Critics of violent games argue they can influence real-life aggression, while others say there’s no proven link.")
+        self.save_question(question=mock_question_12)
+
+        mock_question_13 = Question("Should all citizens have free access to healthcare?","Proponents of free healthcare argue it’s a basic right, while critics are concerned about high government costs.")
+        self.save_question(question=mock_question_13)
 
     def reset_database(self):
         """Drops and recreates all tables"""

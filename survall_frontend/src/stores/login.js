@@ -29,6 +29,15 @@ export const useLoginStore = defineStore('login', {
             }
             return await response.json()
         },
+        async get_closed_questions() {
+            let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/closed_questions`,{
+                headers: {'Authorization': `${this.token}`},
+            })
+            if (!response.ok) {
+                console.log()
+            }
+            return await response.json()
+        },
 
         async login(username) {
             console.log(username)

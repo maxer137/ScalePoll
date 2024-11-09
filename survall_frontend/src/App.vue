@@ -5,6 +5,7 @@ import Login from "@/components/Login.vue";
 import {useLoginStore} from "@/stores/login.js";
 import AnsweredQuestions from "@/components/AnsweredQuestions.vue";
 import OutOfQuestions from "@/components/OutOfQuestions.vue";
+import ClosedQuestions from "@/components/ClosedQuestions.vue";
 
 
 let store = useLoginStore()
@@ -30,7 +31,7 @@ store.$subscribe((mutation, state) => {
   <header class="d-flex w-100 justify-content-end align-items-center border-bottom">
     <button type="button" class="btn btn-primary m-2" @click="state=0">Vote</button>
     <button type="button" class="btn btn-primary m-2" @click="state=1">Your History</button>
-    <button type="button" class="btn btn-primary m-2" @click="state=0">Overview</button>
+    <button type="button" class="btn btn-primary m-2" @click="state=2">Overview</button>
   </header>
 
   <main class="d-flex flex-grow justify-content-between align-items-center h-100">
@@ -42,6 +43,9 @@ store.$subscribe((mutation, state) => {
       </div>
       <div v-if="state===1">
         <AnsweredQuestions></AnsweredQuestions>
+      </div>
+      <div v-if="state===2">
+        <ClosedQuestions></ClosedQuestions>
       </div>
     </div>
   </main>

@@ -39,7 +39,7 @@ async function submit_vote() {
   const collapseElementList = document.querySelectorAll('#results-collapse')
   const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
   console.log(collapseList)
-  let response = await fetch(`http://127.0.0.1:1337/get_question`, {
+  let response = await fetch(`http://127.0.0.1:1337/post_answer`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Authorization': 'TODO '},// + store.token},
     body: JSON.stringify(body),
@@ -102,13 +102,12 @@ function flew() {
       </div>
       <div>
         <label class="form-label">Add your discussion points</label>
-        <input class="form-control" id="discussion" placeholder="Add extra inside on your choice"
+        <input class="form-control" id="discussion" placeholder="(Optional)"
                v-model="discussion_value">
       </div>
-      <div>
-        <label class="form-label">When ready</label>
-      </div>
+      <div class="center">
       <button type="button" class="btn btn-success" :disabled="result" @click="submit_vote()">Submit</button>
+      </div>
     </div>
 
     <!--      Results-->
@@ -128,13 +127,25 @@ function flew() {
         </div>
         <h5>General relevance</h5>
         <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
-        <button type="button" class="btn btn-success" @click="next_question()">Next</button>
+        <div class="center">
+          <button type="button" class="btn btn-success" @click="next_question()">Next</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+
+.btn-success {
+  margin-top: 10px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* Styling for the div */
 .flyaway {

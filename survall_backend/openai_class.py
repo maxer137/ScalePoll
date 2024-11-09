@@ -1,3 +1,5 @@
+import re
+
 class OpenAiClass():
     def __init__(self, client):
         self.client = client
@@ -13,6 +15,9 @@ class OpenAiClass():
         Do not add any pretext to the response, only provide the generated question.
         The generated question must be opinion based and not one that can be answered easily with a fact.
         The generated question should be more specific than the original question, and does not become more general.
+        Along with the generated question, provide a short explanation on the relevace of the generated question with regards to the previous one.
+        Enclose the generated question within @ symbols.
+        Enclose the generated explanation within # symbols.
         """
 
     def follow_up_question_query(self, question, answers):
@@ -22,7 +27,7 @@ class OpenAiClass():
         results_no = question.amount_negative
         results_neutral = question.amount_neutral
 
-        request = "Generate a follow up question based on the following question: " + question.text + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes, " + str(results_no) + " that answered no, and " + str(results_neutral) + " that answered neutrally."
+        request = "Generate a follow up question based on the following question: " + question.question + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes, " + str(results_no) + " that answered no, and " + str(results_neutral) + " that answered neutrally."
         print("Request: ", request)
         # Create a reuqest to api and get the completion
         completion = self.client.chat.completions.create(
@@ -33,4 +38,10 @@ class OpenAiClass():
             ]
         )
 
-        return completion.choices[0].message.content
+        pattern_question = r'@([^@]+)@'
+        pattern_explanation = r'#([^#]+)#'
+
+        gen_question =  re.findall(pattern_question, completion.choices[0].message.content)
+        gen_question_explanation = re.findall(pattern_explanation, completion.choices[0].message.content)
+
+        return gen_question, gen_question_explanation

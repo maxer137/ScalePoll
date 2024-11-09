@@ -15,9 +15,15 @@ class OpenAiClass():
         Do not add any pretext to the response, only provide the generated question.
         The generated question must be opinion based and not one that can be answered easily with a fact.
         The generated question should be more specific than the original question, and does not become more general.
-        Along with the generated question, provide a short explanation on the relevace of the generated question with regards to the previous one.
+        Provide a short explanation about the generated question, 
+        Do not refer to the original question or the generated question within the explanation. 
+        The explanation should focus solely on the context behind the generated question.
         Enclose the generated question within @ symbols.
         Enclose the generated explanation within # symbols.
+        also, we don't really want it to sound like we're reading an explanation.   
+        Just, imagine like you're talking face to face to someone. You really just want to explain it to them simply and shortly. 
+        Don't waste too much time. Don't be too meta. Don't try to to refer to the question or the idea. That looks too weird. 
+        It really should just be a short 2 sentence explanation of the topic at hand. 
         """
 
     def follow_up_question_query(self, question, answers):

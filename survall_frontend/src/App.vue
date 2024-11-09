@@ -16,7 +16,7 @@ store.logged_in = true
 
   <main class="d-flex justify-content-between">
     <Login v-if="!store.logged_in"></Login>
-    <Opinion v-if=store.logged_in title="tests"/>
+    <Opinion v-if=store.logged_in title="Ronald is the best boomer"/>
   </main>
 </template>
 

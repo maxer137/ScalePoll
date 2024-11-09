@@ -1,7 +1,7 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import uuid
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database.sql_base import Base
@@ -36,10 +36,11 @@ class Question(Base):
     answers_count = Column(Integer)
     discussion_count = Column(Integer)
 
-    creation_time = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))  # Set at creation
-    close_time = Column(DateTime, nullable=True)  # Set when closed
+    creation_time = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    close_time = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc) + timedelta(days=7))
+    closed = Column(Boolean, default=False, nullable=False)
 
-    def __init__(self, question, description, parent_question_uuid=None, root_question_uuid=None, creation_time=None):
+    def __init__(self, question, description, parent_question_uuid=None, root_question_uuid=None, creation_time=None, close_time=None):
         self.uuid = str(uuid.uuid4())
 
         self.question = question
@@ -56,6 +57,7 @@ class Question(Base):
         self.discussion_count = 0
 
         self.creation_time = creation_time or datetime.now(timezone.utc)
+        self.close_time = close_time or self.creation_time + timedelta(days=7)
 
     def get_uuid(self):
         return str(self.uuid)
@@ -86,7 +88,8 @@ class Question(Base):
             "answers_count":self.answers_count,
             "discussion_count":self.discussion_count,
             "creation_time":self.get_creation_time(),
-            "close_time":self.get_close_time()
+            "close_time":self.get_close_time(),
+            "closed":self.closed
         }
     
     def to_dict_short(self):
@@ -116,6 +119,7 @@ class Question(Base):
             f"discussion_count={self.discussion_count}), "
             f"creation_time={self.get_creation_time()}, "
             f"close_time={self.get_close_time()})"
+            f"closed={self.closed}"
         )
     
     @classmethod

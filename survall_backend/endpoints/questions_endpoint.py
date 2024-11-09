@@ -63,3 +63,7 @@ class RelatedQuestions(Resource):
         related_questions_dict_list = [question.to_dict() for question in related_questions]
 
         return related_questions_dict_list, 200
+    
+class BrewCoffee(Resource):
+    def get(self):
+        return 418

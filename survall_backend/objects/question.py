@@ -76,24 +76,24 @@ class Question(Base):
 
     def to_dict(self):
         return {
-            "uuid": self.uuid,
-            "question": self.question,
-            "description": self.description,
+            "uuid":self.uuid,
+            "question":self.question,
+            "description":self.description,
             "positive":self.amount_positive,
             "neutral":self.amount_neutral,
             "negative":self.amount_negative,
             "relevance_sum":self.relevance_sum,
             "answers_count":self.answers_count,
             "discussion_count":self.discussion_count,
-            "creation_time": self.get_creation_time(),
-            "close_time": self.get_close_time()
+            "creation_time":self.get_creation_time(),
+            "close_time":self.get_close_time()
         }
     
     def to_dict_short(self):
         return {
-            "uuid": self.uuid,
-            "question": self.question,
-            "description": self.description,
+            "uuid":self.uuid,
+            "question":self.question,
+            "description":self.description,
         }
 
     def to_json(self):

@@ -73,12 +73,13 @@ async function submit_vote() {
   const collapseElementList = document.querySelectorAll('#results-collapse')
   const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
   console.log(collapseList)
-  // let response = await fetch(`${DOMAIN_NAME}/response`, {
-  //   method: 'POST',
-  //   body: JSON.stringify(body),
-  // })
-  // console.log(await response.text())
-  // show_results(await response.json())
+  let response = await fetch(`http://127.0.0.1:1337/get_question`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Authorization': 'TODO '},// + store.token},
+    body: JSON.stringify(body),
+  })
+  console.log(await response.text())
+  show_results(await response.json())
 }
 
 async function show_results(results) {

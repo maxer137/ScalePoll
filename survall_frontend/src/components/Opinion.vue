@@ -20,7 +20,6 @@ let discussion_value = ref('')
 function next_question() {
   emit('nextquestion')
   response_done.value = true
-
 }
 
 let response_done = ref(false)
@@ -144,7 +143,7 @@ onkeydown = (event) => {
       <input type="range" class="form-range" min="1" max="5" step="0.1"
              :value="vote_stats['relevance_sum'] / vote_stats['answers_count']" disabled/>
       <div class="center">
-        <button type="button" class="btn btn-success" @click="next_question()">Next</button>
+        <button type="button" class="btn btn-success" @click="next_question">Next</button>
       </div>
     </div>
   </div>

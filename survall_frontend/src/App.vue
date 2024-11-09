@@ -4,16 +4,16 @@ import { ref } from 'vue'
 import Login from "@/components/Login.vue";
 import {useLoginStore} from "@/stores/login.js";
 import AnsweredQuestions from "@/components/AnsweredQuestions.vue";
+import OutOfQuestions from "@/components/OutOfQuestions.vue";
 
 
 let store = useLoginStore()
-let questions = ref([])
+let question = ref(null)
 let state = ref(0);
 
 async function get_question() {
-  console.log("getting question")
-  questions.value = await store.get_question()
-  console.log(questions.value)
+  question.value = null
+  question.value = await store.get_question()
 }
 
 store.$subscribe((mutation, state) => {
@@ -22,11 +22,6 @@ store.$subscribe((mutation, state) => {
   }
 })
 
-async function next_question() {
-  console.log("what")
-  await get_question()
-}
-console.log(questions.value)
 // evil debug to easily log in (don't tell evil hackers)
 // store.logged_in = true
 </script>
@@ -40,11 +35,14 @@ console.log(questions.value)
 
   <main class="d-flex flex-grow justify-content-between align-items-center h-100">
     <Login v-if="!store.logged_in" ></Login>
-    <div v-else-if="state===0" v-for="question in questions" >
-      <Opinion :question="question" :key="question['uuid']" @nextquestion="next_question"/>
-    </div>
-    <div v-if="state===1">
-      <AnsweredQuestions></AnsweredQuestions>
+    <div v-else>
+      <div v-if="state===0" >
+        <Opinion v-if="question !== null" :question="question" :key="question['uuid']" @nextquestion="get_question"/>
+        <OutOfQuestions v-else/>
+      </div>
+      <div v-if="state===1">
+        <AnsweredQuestions></AnsweredQuestions>
+      </div>
     </div>
   </main>
 </template>

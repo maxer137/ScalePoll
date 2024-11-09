@@ -15,7 +15,10 @@ export const useLoginStore = defineStore('login', {
             if (!response.ok) {
                 console.log("something went wrong")
             }
-            return [await response.json()]
+            if (response.status === 204) {
+                return null
+            }
+            return await response.json()
         },
         async get_my_questions() {
             let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/previous_questions`,{

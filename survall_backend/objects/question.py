@@ -56,6 +56,7 @@ class Question(Base):
         self.relevance_sum = 0
         self.answers_count = 0
         self.discussion_count = 0
+        self.threshold_sum = 0
 
         self.creation_time = creation_time or datetime.now(timezone.utc)
         self.close_time = close_time or self.creation_time + timedelta(days=7)

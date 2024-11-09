@@ -7,7 +7,7 @@ import {useLoginStore} from "@/stores/login.js";
 
 let store = useLoginStore()
 // evil debug to easily log in (don't tell evil hackers)
-store.logged_in = true
+// store.logged_in = true
 </script>
 
 <template>

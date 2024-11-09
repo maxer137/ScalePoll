@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from dotenv import load_dotenv
 
-from endpoints.template_endpoint import *
+from endpoints.authentication_endpoint import *
 load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*"}})

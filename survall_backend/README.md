@@ -25,3 +25,5 @@ In cmd: `curl --header "Content-Type: application/json" --data "{\"question_uuid
 `curl --header "Content-Type: application/json" --data "{\"hash\": \"f843ba02-d1ab-4f10-8a70-503c72989c9d\"}" http://127.0.0.1:1337/login`
 
 `curl --request POST --header "Content-Type: application/json" --header "Authorization: [INSERT TOKEN HERE]" --data "[INSERT DATA HERE]" http://127.0.0.1:1337/authentication_example`
+
+`curl --request POST --header "Content-Type: application/json" --header "Authorization: 12345678-1234-5678-1234-567812345678" --data "[INSERT DATA HERE]" http://127.0.0.1:1337/authentication_example`

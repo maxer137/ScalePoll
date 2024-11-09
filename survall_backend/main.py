@@ -5,10 +5,9 @@ from flask_restful import Api
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from endpoints.questions_endpoint import AnswerQuestion, RequestQuestion
-
 from survall import Survall
 from endpoints.openai_endpoint import RequestOpenAi
+from endpoints.questions_endpoint import AnswerQuestion, RequestQuestion
 
 # Load environment variables
 load_dotenv()
@@ -16,7 +15,9 @@ load_dotenv()
 # Initialize OpenAI
 openai = OpenAI()
 
-Survall().setup(openai)
+
+inject_mock_data = True
+Survall().setup(openai, inject_mock_data)
 
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*"}})
@@ -37,4 +38,5 @@ api.add_resource(AnswerQuestion, '/post_answer')
 api.add_resource(RequestOpenAi, '/get_openai')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",debug=True, port=1337)      
+    app.run(host="0.0.0.0",debug=True, port=1337)
+      

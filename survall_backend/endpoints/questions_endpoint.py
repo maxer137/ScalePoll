@@ -4,10 +4,11 @@ from flask import request
 from survall import Survall
 from objects.question import Question
 from objects.answer import Answer
+from objects.user_question import UserQuestionPair
 
 class RequestQuestion(Resource):
     def get(self):
-        question:Question = Survall().database.get_question()
+        question:Question = Survall().get_question()
 
         json_question = question.to_json()
 
@@ -18,8 +19,9 @@ class AnswerQuestion(Resource):
         data = request.get_json()
 
         answer:Answer = Answer.from_dict(data)
+        user_question_pair:UserQuestionPair = UserQuestionPair.from_dict(data)
 
-        Survall().database.add_question(Question(answer.discussion))
+        Survall().save_answer(answer, user_question_pair)
 
         print(answer.to_json())
 

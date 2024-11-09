@@ -67,6 +67,9 @@ class SQLDatabase():
         ).all()
         answered_question_uuids = {q[0] for q in answered_question_uuids}  # Convert to set for faster lookup
 
+        print("USER ANSWERED ALL THE FOLLOWING QUESTIONS:")
+        print(answered_question_uuids)
+
         # Filter questions to exclude ones already answered by the user
         unanswered_questions = [q for q in questions if q.get_uuid() not in answered_question_uuids]
 
@@ -78,7 +81,7 @@ class SQLDatabase():
         print(iteration)
 
         # Return the question if available
-        return questions[question_index] if question_index is not None else None
+        return unanswered_questions[question_index] if question_index is not None else None
 
     # TODO don't use this one anymore or also implement filtering
     # def get_random_question(self):
@@ -88,9 +91,13 @@ class SQLDatabase():
         existing_answer = self.session.query(UserQuestionPair).filter_by(
             user_uuid=user_question_pair.user_uuid, 
             question_uuid=user_question_pair.question_uuid).first()
+        
+        print("CHECK IF THE USER ALREADY ANSWERED THE QUESTION:")
+        print(existing_answer)
 
-        if not existing_answer:
+        if existing_answer is None:
             return False
+        print("Answer already exists, skipping submitting")
         return True
     
     def save_question(self, question:Question):
@@ -106,7 +113,12 @@ class SQLDatabase():
     
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
         # TODO update question statistics
-        question = self.get_question_of_answer(answer)
+        print("LOOKING FOR QUESTION:")
+        print(answer.question_uuid)
+        question = self.get_question_by_uuid(answer.question_uuid)
+        print("FOUND THE FOLLOWING QUESTION:")
+        print(question)
+
         question.answers_count += 1
         if int(answer.answer_score) == -1:
             question.amount_negative += 1
@@ -127,11 +139,14 @@ class SQLDatabase():
         self.session.add(user_question_pair)
         self.session.commit()
 
+        print("Persisting Answer")
+        print(answer)
+
     def get_answers_of_question(self, question):
         return self.session.query(Answer).filter(Answer.question_uuid == question.uuid).all()
 
-    def get_question_of_answer(self, answer):
-        return self.session.query(Question).filter(Question.uuid == answer.question_uuid).first()
+    # def get_question_of_answer(self, answer):
+    #     return self.session.query(Question).filter(Question.uuid == answer.question_uuid).first()
 
     # Example of querying the database
     def get_answer_by_uuid(self, answer_uuid):

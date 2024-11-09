@@ -17,25 +17,13 @@ function next_question() {
   response_done.value = true
 }
 
-let description = ref('')
-let fore = ref(0)
-let neutral = ref(0)
-let against = ref(0)
 let relevance = ref(3)
 let response_done = ref(false)
 
+let vote_stats = ref({})
 
 async function submit_vote() {
-  let body = {
-    question_uuid: 0,
-    user_hash: 0,
-    answer_score: vote_value.value,
-    relevance_score: parseInt(relevance_value.value),
-    discussion_field: discussion_value.value,
-  }
   result.value = !result.value
-  show_results(0)
-  console.log(body)
   const collapseElementList = document.querySelectorAll('#results-collapse')
   const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
   console.log(collapseList)
@@ -48,11 +36,14 @@ async function submit_vote() {
   show_results(await response.json())
 }
 
-async function show_results(results) {
-  fore = ref(30)
-  neutral = ref(30)
-  against = ref(40)
-  relevance = ref(3.4)
+  vote_stats = store.submit_vote(props.question.uuid,
+      store.token,
+      vote_value.value,
+      parseInt(relevance_value.value),
+      discussion_value.value,)
+
+  relevance = vote_stats['']
+  console.log(await vote_stats)
 }
 
 function flew() {
@@ -116,9 +107,9 @@ function flew() {
         <h5>General opinion</h5>
         <p>{{ question }}</p>
         <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-bar bg-danger" :style="{'width': against + '%'}">{{against}}%</div>
-          <div class="progress-bar bg-secondary" :style="{'width': neutral + '%'}">{{neutral}}%</div>
-          <div class="progress-bar bg-success" :style="{'width': fore + '%'}" id="progress_fore">{{fore}}%</div>
+          <div class="progress-bar bg-danger" :style="{'width': vote_stats[''] + '%'}">{{vote_stats['']}}%</div>
+          <div class="progress-bar bg-secondary" :style="{'width': vote_stats[''] + '%'}">{{vote_stats['']}}%</div>
+          <div class="progress-bar bg-success" :style="{'width': vote_stats[''] + '%'}" id="progress_fore">{{vote_stats['']}}%</div>
         </div>
         <div class="d-flex flex-row">
           <p class="text-danger ">No</p>
@@ -127,9 +118,7 @@ function flew() {
         </div>
         <h5>General relevance</h5>
         <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
-        <div class="center">
-          <button type="button" class="btn btn-success" @click="next_question()">Next</button>
-        </div>
+        <button type="button" class="btn btn-success" @click="next_question()">Next</button>
       </div>
     </div>
   </div>

@@ -44,5 +44,24 @@ export const useLoginStore = defineStore('login', {
                 console.log("login success")
             }
         },
+
+        async submit_vote(question_uiid, user_hash, answer_score, relevance_score, discussion_field) {
+            let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/get_question`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: {
+                    question_uuid: question_uiid,
+                    user_hash: user_hash,
+                    answer_score: answer_score,
+                    relevance_score: relevance_score,
+                    discussion_field: discussion_field,
+                },
+            })
+
+            if (!response.ok) {
+                console.log("login success")
+            }
+            return await response.json()
+        }
     }
 })

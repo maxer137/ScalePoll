@@ -7,30 +7,24 @@ const props = defineProps({
 
 const result = ref(false)
 
-var vote_value = 0
-
-function change_vote(value) {
-  vote_value = value
-  console.log(vote_value)
+let vote_value = ref(0)
+function change_vote(vote) {
+  vote_value.value = vote
 }
 
-var relevance_value = 0
-function set_relevance(value) {
-  console.log(value)
-  relevance_value = value
-}
+let relevance_value = ref(0)
+
+let discussion_value = ref('')
 
 async function submit_vote() {
   let body = {
     question_uuid: 0,
     user_uuid: 0,
-    answer_score: vote_value,
-    relevance_score: relevance_value,
-    discussion_field: 0,
+    answer_score: vote_value.value,
+    relevance_score: parseInt(relevance_value.value),
+    discussion_field: discussion_value.value,
   }
   result.value = !result.value
-  console.log(vote_value)
-  console.log(relevance_value)
   console.log(body)
   // let response = await fetch(`${DOMAIN_NAME}/response`, {
   //   method: 'POST',
@@ -55,14 +49,14 @@ async function show_results(results) {
 <!--      Buttons-->
       <div v-if="!result" class="card-footer d-flex flex-column">
         <h5>How relevant is this question</h5>
-        <input type="range" class="form-range" min="0" max="5" id="relevance" @change="set_relevance()" />
+        <input type="range" class="form-range" min="1" max="5" id="relevance" value="3" v-model="relevance_value" />
         <div class="d-flex justify-content-between">
           <button type="button" class="btn btn-danger" @click="change_vote(-1)">disagree</button>
           <button type="button" class="btn btn-primary" @click="change_vote(0)">unsure</button>
           <button type="button" class="btn btn-success" @click="change_vote(1)">agree</button>
         </div>
         <label class="form-label">Add your discussion points</label>
-        <input class="form-control" id="discussion" placeholder="Add extra inside on your choice">
+        <input class="form-control" id="discussion" placeholder="Add extra inside on your choice" v-model="discussion_value" >
 
         <label class="form-label">When ready</label>
         <button type="button" class="btn btn-success" @click="submit_vote()">Submit</button>

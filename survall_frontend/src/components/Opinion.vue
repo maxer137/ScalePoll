@@ -18,6 +18,11 @@ let relevance_value = ref(0)
 
 let discussion_value = ref('')
 
+let fore = ref(20)
+let neutral = ref(30)
+let against = ref(50)
+let relevance = ref(3.4)
+
 async function submit_vote() {
   let body = {
     question_uuid: 0,
@@ -38,6 +43,9 @@ async function submit_vote() {
 
 async function show_results(results) {
   // { for: 123, against: 2}
+  //question uuid
+  //fore, against, neutral
+  //relevance
 }
 
 function flew() {
@@ -97,11 +105,19 @@ function flew() {
 
     <!--      Results-->
     <div class="card-footer">
-      <div class="progress bg-success" role="progressbar" aria-label="Basic example" aria-valuenow="75"
-           aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar bg-danger" style="width: 25%"></div>
-        <div class="progress-bar bg-gray" style="width: 50%"></div>
+      <h5>General opinion</h5>
+      <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-success" :style="{'width': fore + '%'}" id="progress_fore">{{fore}}%</div>
+        <div class="progress-bar bg-secondary" :style="{'width': neutral + '%'}">{{neutral}}%</div>
+        <div class="progress-bar bg-danger" :style="{'width': against + '%'}">{{against}}%</div>
       </div>
+      <div class="d-flex flex-row">
+        <h5 class="text-success">Yes</h5>
+        <h5 class="text-secondary translate-middle-x position-absolute start-50">Neutral</h5>
+        <h5 class="text-danger translate-middle-x position-absolute end-0">No</h5>
+      </div>
+      <h5>General relevance</h5>
+      <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
     </div>
   </div>
 </template>

@@ -15,9 +15,11 @@ class RequestQuestion(Resource):
 
         question:Question = Survall().get_question(authentication.user_hash)
 
-        json_question = question.to_dict_short()
+        # If there is no valid question to ask
+        if question is None:
+            return 204
 
-        return json_question, 200
+        return question.to_dict_short(), 200
     
 class AnswerQuestion(Resource):
     def post(self):
@@ -26,8 +28,9 @@ class AnswerQuestion(Resource):
         authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
         if authentication is None: return 401
 
-        data['user_uuid'] = authentication.user_hash
         answer:Answer = Answer.from_dict(data)
+
+        data['user_uuid'] = authentication.user_hash
         user_question_pair:UserQuestionPair = UserQuestionPair.from_dict(data)
 
         Survall().save_answer(answer, user_question_pair)

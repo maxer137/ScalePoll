@@ -43,8 +43,6 @@ class Survall():
         if not self.database.check_if_user_answered_question(user_question_pair=user_question_pair):
             self.database.save_answer(answer=answer, user_question_pair=user_question_pair)
 
-        # TODO return question statistics
-
     def generate_new_question(self, question:Question):
         # If a question has been answered enough times and has enough relevance, a follow up question is generated and added to the database
         if(question.answers_count * question.relevance_sum >= 30):

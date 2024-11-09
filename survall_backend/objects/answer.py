@@ -46,7 +46,6 @@ class Answer(Base):
     def from_dict(cls, data:dict):
         return cls(
             question_uuid=data["question_uuid"],
-            # user_uuid=data["user_uuid"],
             answer_score=data["answer_score"],
             relevance_score=data["relevance_score"],
             discussion=data["discussion"]

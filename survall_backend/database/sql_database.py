@@ -11,7 +11,6 @@ from objects.authentication import Authentication
 from database.sql_base import Base
 
 
-
 class SQLDatabase():
     def __init__(self, DATABASE_NAME='survall.db', inject_mock_data=True):
         # Setup the SQLite engine
@@ -28,10 +27,15 @@ class SQLDatabase():
         if inject_mock_data:
             self.inject_mock_data() 
 
-
     def register_authentication(self, authentication:Authentication):
-        self.session.merge(authentication)
-        self.session.commit()
+        registration_exists = self.session.query(Authentication).filter(
+            Authentication.session_token == authentication.session_token and Authentication.user_hash == authentication.user_hash).first()
+        if registration_exists:
+            return False # No new session registration has been made
+        else:
+            self.session.add(authentication)
+            self.session.commit()
+            return True
 
     def check_authentication(self, session_token):
         return self.session.query(Authentication).filter(Authentication.session_token == session_token).first()
@@ -42,16 +46,22 @@ class SQLDatabase():
         questions = self.session.query(Question).filter(Question.uuid.in_(unique_question_uuids)).all()
 
         return questions
+    
+    def get_related_questions(self, question:Question):
+        questions = self.session.query(Question).filter(Question.root_question_uuid == question.root_question_uuid).all()
+
+        return questions
 
     def get_iterated_question(self, iteration):
         questions = self.session.query(Question).all()
 
-        print(iteration)
-        print(len(questions))
-    
         # Get the question based on the iteration and modulus of the total number of questions
         question_index = iteration % len(questions) if questions else None
-        
+
+        print(len(questions))
+        print(question_index)
+        print(iteration)
+
         # Return the question if available
         return questions[question_index] if question_index is not None else None
 
@@ -115,7 +125,10 @@ class SQLDatabase():
     def inject_mock_data(self):
         mock_user = Authentication(user_hash="mock_user_hash")
         mock_user.session_token = str(uuid.UUID('12345678-1234-5678-1234-567812345678'))
-        self.register_authentication(authentication=mock_user)
+        continue_injection = self.register_authentication(authentication=mock_user)
+
+        if continue_injection == False:
+            return
 
         mock_question = Question("Do you agree with raising the minimum wage?", "The minimum wage is the lowest pay that a worker may receive. Due to costs of living, some believe it is too low to sustain a healthy lifestyle.") # This is a root question so no parent or root uuid is set
         mock_answer = Answer(

@@ -30,7 +30,7 @@ class AnswerQuestion(Resource):
         Survall().save_answer(answer, user_question_pair)
 
         related_question = Survall().get_question_by_id(answer)
-        # Survall().generate_new_question(related_question)
+        Survall().generate_new_question(related_question)
 
         print(related_question)
 
@@ -46,6 +46,20 @@ class PreviousQuestions(Resource):
         previous_questions = Survall().get_previous_questions(authentication)
 
         previous_questions_dict_list = [question.to_dict() for question in previous_questions]
-        questions_json = json.dumps(previous_questions_dict_list)
 
         return previous_questions_dict_list, 200
+    
+class RelatedQuestions(Resource):
+    def post(self):
+        authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
+        if authentication is None: return 401
+
+        print(authentication.user_hash)
+
+        data = request.get_json()
+        question:Question = Question.from_dict(data)
+
+        related_questions = Survall().get_related_questions(question)
+        related_questions_dict_list = [question.to_dict() for question in related_questions]
+
+        return related_questions_dict_list, 200

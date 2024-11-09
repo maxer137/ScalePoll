@@ -94,3 +94,11 @@ class Question(Base):
             f"answers_count={self.answers_count}, "
             f"discussion_count={self.discussion_count})"
         )
+    
+    @classmethod
+    def from_dict(cls, data:dict):
+        return cls(
+            question_uuid=data["question_uuid"],
+            question = data["question"],
+            description = data["description"]
+        )

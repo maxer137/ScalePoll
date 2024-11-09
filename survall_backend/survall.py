@@ -23,6 +23,9 @@ class Survall():
 
     def get_previous_questions(self, authentication:Authentication):
         return self.database.get_previous_questions(authentication)
+    
+    def get_related_questions(self, question:Question):
+        return self.database.get_related_questions(question)
         
     def authenticate(self, session_token):
         return self.database.check_authentication(session_token)

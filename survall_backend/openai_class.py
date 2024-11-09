@@ -18,10 +18,11 @@ class OpenAiClass():
     def follow_up_question_query(self, question, answers):
 
         discussions = [answer.discussion for answer in answers]
-        results_yes = len([answer for answer in answers if answer.answer_score == 1])
-        results_no = len([answer for answer in answers if answer.answer_score == -1])
-
-        request = "Generate a follow up question based on the following question: " + question.text + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes and " + str(results_no) + " that answered no."
+        results_yes = question.amount_positive
+        results_no = question.amount_negative
+        results_neutral = question.amount_neutral
+        
+        request = "Generate a follow up question based on the following question: " + question.text + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes, " + str(results_no) + " that answered no, and " + str(results_neutral) + " that answered neutrally."
         print("Request: ", request)
         # Create a reuqest to api and get the completion
         completion = self.client.chat.completions.create(

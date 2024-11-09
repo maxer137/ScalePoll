@@ -50,6 +50,9 @@ class SQLDatabase():
         self.session.add(user_question_pair)
         self.session.commit()
 
+    def get_answers_of_question(self, question):
+        return self.session.query(Answer).filter(Answer.question_uuid == question.uuid).all()
+
     # Example of querying the database
     def get_answer_by_uuid(self, answer_uuid):
         return self.session.query(Answer).filter(Answer.uuid == answer_uuid).first()

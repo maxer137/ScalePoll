@@ -35,6 +35,7 @@ class Question(Base):
     relevance_sum = Column(Integer)
     answers_count = Column(Integer)
     discussion_count = Column(Integer)
+    threshold_sum = Column(Integer)
 
     creation_time = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     close_time = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc) + timedelta(days=7))

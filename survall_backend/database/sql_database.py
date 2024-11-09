@@ -15,7 +15,7 @@ from database.sql_base import Base
 class SQLDatabase():
     def __init__(self, DATABASE_NAME='survall.db', inject_mock_data=True):
         # Setup the SQLite engine
-        self.db_url = f'sqlite:///{DATABASE_NAME}'
+        self.db_url = f'sqlite:///{DATABASE_NAME}?check_same_thread=False'
         self.engine = create_engine(self.db_url, echo=True)
 
         # Create all the tables (Question, Answer, UserQuestionAnswer)
@@ -152,10 +152,12 @@ class SQLDatabase():
         else:
             print("ERROR: invalid vote, ignoring")
 
+
         if answer.discussion != '' and answer.discussion is not None:
             question.discussion_count += 1
 
         question.relevance_sum += int(answer.relevance_score)
+        question.threshold_sum += int(answer.relevance_score)
 
         self.session.add(question)
         self.session.add(answer)

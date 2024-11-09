@@ -1,20 +1,20 @@
 <script setup>
 
 import {ref} from 'vue'
+import * as Bootstrap from "bootstrap";
 
 const props = defineProps({
   title: String,
 })
 
 const result = ref(false)
-let question = ref(true)
 let vote_value = ref(null)
 let flewaway = ref(false)
 // function change_vote(vote) {
 //   vote_value.value = vote
 // }
 
-let relevance_value = ref(0)
+let relevance_value = ref(3)
 
 let discussion_value = ref('')
 
@@ -33,6 +33,9 @@ async function submit_vote() {
   }
   result.value = !result.value
   console.log(body)
+  const collapseElementList = document.querySelectorAll('#results-collapse')
+  const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
+  console.log(collapseList)
   // let response = await fetch(`${DOMAIN_NAME}/response`, {
   //   method: 'POST',
   //   body: JSON.stringify(body),
@@ -100,29 +103,32 @@ function flew() {
       <div>
         <label class="form-label">When ready</label>
       </div>
-      <button type="button" class="btn btn-success" @click="submit_vote()">Submit</button>
+      <button type="button" class="btn btn-success" :disabled="result" @click="submit_vote()">Submit</button>
     </div>
 
     <!--      Results-->
-    <div class="card-footer">
-      <h5>General opinion</h5>
-      <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar bg-success" :style="{'width': fore + '%'}" id="progress_fore">{{fore}}%</div>
-        <div class="progress-bar bg-secondary" :style="{'width': neutral + '%'}">{{neutral}}%</div>
-        <div class="progress-bar bg-danger" :style="{'width': against + '%'}">{{against}}%</div>
+    <div class="card-footer collapse" id="results-collapse">
+      <div>
+        <h5>General opinion</h5>
+        <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar bg-success" :style="{'width': fore + '%'}" id="progress_fore">{{fore}}%</div>
+          <div class="progress-bar bg-secondary" :style="{'width': neutral + '%'}">{{neutral}}%</div>
+          <div class="progress-bar bg-danger" :style="{'width': against + '%'}">{{against}}%</div>
+        </div>
+        <div class="d-flex flex-row">
+          <h5 class="text-success">Yes</h5>
+          <h5 class="text-secondary translate-middle-x position-absolute start-50">Neutral</h5>
+          <h5 class="text-danger translate-middle-x position-absolute end-0">No</h5>
+        </div>
+        <h5>General relevance</h5>
+        <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
       </div>
-      <div class="d-flex flex-row">
-        <h5 class="text-success">Yes</h5>
-        <h5 class="text-secondary translate-middle-x position-absolute start-50">Neutral</h5>
-        <h5 class="text-danger translate-middle-x position-absolute end-0">No</h5>
-      </div>
-      <h5>General relevance</h5>
-      <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+
 /* Styling for the div */
 .flyaway {
   animation: flyaway 1.5s ease-in-out forwards;

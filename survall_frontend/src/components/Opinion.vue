@@ -20,7 +20,6 @@ let discussion_value = ref('')
 function next_question() {
   emit('nextquestion')
   response_done.value = true
-
 }
 
 let response_done = ref(false)
@@ -118,6 +117,7 @@ onkeydown = (event) => {
 
     <!--      Results-->
     <div class="card-footer collapse" id="results-collapse">
+      <h5>How other people voted</h5>
       <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75"
            aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar bg-danger"
@@ -140,11 +140,15 @@ onkeydown = (event) => {
         <p class="text-secondary translate-middle-x position-absolute start-50">Neutral</p>
         <p class="text-success translate-middle-x position-absolute end-0">Yes</p>
       </div>
-      <h5>General relevance</h5>
+      <h5>How relevant is it to other people</h5>
       <input type="range" class="form-range" min="1" max="5" step="0.1"
              :value="vote_stats['relevance_sum'] / vote_stats['answers_count']" disabled/>
+      <div class="d-flex justify-content-between">
+        <label class="form-text">Least relevant</label>
+        <label class="form-text">Most relevant</label>
+      </div>
       <div class="center">
-        <button type="button" class="btn btn-success" @click="next_question()">Next</button>
+        <button type="button" class="btn btn-success" @click="next_question">Next</button>
       </div>
     </div>
   </div>

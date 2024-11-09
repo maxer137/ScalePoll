@@ -17,7 +17,7 @@ class RequestQuestion(Resource):
 
         # If there is no valid question to ask
         if question is None:
-            return 204
+            return None,204
 
         return question.to_dict_short(), 200
     

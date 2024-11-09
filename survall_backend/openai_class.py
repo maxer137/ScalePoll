@@ -19,7 +19,7 @@ class OpenAiClass():
         Do not refer to the original question or the generated question within the explanation. 
         The explanation should focus solely on the context behind the generated question.
         Enclose the generated question within @ symbols.
-        Enclose the generated explanation within # symbols.
+        Start the generated explanation with a # symbol.
         also, we don't really want it to sound like we're reading an explanation.   
         Just, imagine like you're talking face to face to someone. You really just want to explain it to them simply and shortly. 
         Don't waste too much time. Don't be too meta. Don't try to to refer to the question or the idea. That looks too weird. 
@@ -43,11 +43,14 @@ class OpenAiClass():
                 {"role": "user", "content": request}
             ]
         )
-
+        print("response: ", completion.choices[0].message.content)
         pattern_question = r'@([^@]+)@'
-        pattern_explanation = r'#([^#]+)#'
+        pattern_explanation = r'#([^#]+)'
 
-        gen_question =  re.findall(pattern_question, completion.choices[0].message.content)[0]
-        gen_question_explanation = re.findall(pattern_explanation, completion.choices[0].message.content)[0]
+        gen_question =  re.findall(pattern_question, completion.choices[0].message.content)
+        gen_question_explanation = re.findall(pattern_explanation, completion.choices[0].message.content)
 
-        return gen_question, gen_question_explanation
+        if len(gen_question) == 0 or len(gen_question_explanation) == 0:
+            return None, None
+
+        return gen_question[0], gen_question_explanation[0]

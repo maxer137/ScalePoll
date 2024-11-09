@@ -48,8 +48,10 @@ class Survall():
 
     def generate_new_question(self, question:Question):
         # If a question has been answered enough times and has enough relevance, a follow up question is generated and added to the database
-        if (question.discussion_count * (question.relevance_sum/question.answers_count) >= 30):
+        if question.discussion_count * (question.relevance_sum / question.answers_count) >= 10:
             follow_up_question, question_explanation = Survall().openai.follow_up_question_query(question,Survall().database.get_answers_of_question(question))
+            if follow_up_question is None:
+                return
             new_question = Question(follow_up_question, question_explanation,question.uuid,question.root_question_uuid)
             Survall().save_question(question=new_question)
             question.discussion_count = 0

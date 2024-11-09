@@ -46,6 +46,9 @@ class SQLDatabase():
     def get_iterated_question(self, iteration):
         questions = self.session.query(Question).all()
 
+        print(iteration)
+        print(len(questions))
+    
         # Get the question based on the iteration and modulus of the total number of questions
         question_index = iteration % len(questions) if questions else None
         

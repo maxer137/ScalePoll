@@ -29,9 +29,10 @@ class AnswerQuestion(Resource):
 
         Survall().save_answer(answer, user_question_pair)
 
-        # Survall().generate_new_question()
-
         related_question = Survall().get_question_by_id(answer)
+        # Survall().generate_new_question(related_question)
+
+        print(related_question)
 
         return related_question, 200
     

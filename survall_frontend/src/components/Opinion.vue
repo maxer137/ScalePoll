@@ -34,7 +34,7 @@ async function submit_vote() {
   })
   console.log(await response.text())
   show_results(await response.json())
-}
+
 
   vote_stats = store.submit_vote(props.question.uuid,
       store.token,

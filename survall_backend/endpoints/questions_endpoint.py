@@ -23,6 +23,6 @@ class AnswerQuestion(Resource):
 
         Survall().save_answer(answer, user_question_pair)
 
-        print(answer.to_json())
+        Survall().generate_new_question()
 
         return 200

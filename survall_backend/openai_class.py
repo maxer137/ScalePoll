@@ -47,7 +47,7 @@ class OpenAiClass():
         pattern_question = r'@([^@]+)@'
         pattern_explanation = r'#([^#]+)#'
 
-        gen_question =  re.findall(pattern_question, completion.choices[0].message.content)
-        gen_question_explanation = re.findall(pattern_explanation, completion.choices[0].message.content)
+        gen_question =  re.findall(pattern_question, completion.choices[0].message.content)[0]
+        gen_question_explanation = re.findall(pattern_explanation, completion.choices[0].message.content)[0]
 
         return gen_question, gen_question_explanation

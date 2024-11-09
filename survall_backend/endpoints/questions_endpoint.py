@@ -12,7 +12,7 @@ class RequestQuestion(Resource):
     def get(self):
         question:Question = Survall().get_question()
 
-        json_question = question.to_json()
+        json_question = question.to_dict_short()
 
         return json_question, 200
     
@@ -25,9 +25,11 @@ class AnswerQuestion(Resource):
 
         Survall().save_answer(answer, user_question_pair)
 
-        Survall().generate_new_question()
+        # Survall().generate_new_question()
 
-        return 200
+        related_question = Survall().get_question_by_id(answer)
+
+        return related_question, 200
     
 class PreviousQuestions(Resource):
     def get(self):

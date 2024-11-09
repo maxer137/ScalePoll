@@ -66,6 +66,13 @@ class Question(Base):
             "answers_count":self.answers_count,
             "discussion_count":self.discussion_count
         }
+    
+    def to_dict_short(self):
+        return {
+            "uuid": self.uuid,
+            "question": self.question,
+            "description": self.description,
+        }
 
     def to_json(self):
         return self.to_dict()

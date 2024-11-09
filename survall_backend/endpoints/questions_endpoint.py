@@ -70,6 +70,19 @@ class RelatedQuestions(Resource):
 
         return related_questions_dict_list, 200
     
+class ClosedQuestions(Resource):
+    def get(self):
+        authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
+        if authentication is None: return 401
+
+        closed_questions = Survall().get_closed_questions()
+
+        print(closed_questions)
+
+        closed_questions_dict_list = [question.to_dict() for question in closed_questions]
+
+        return closed_questions_dict_list, 200    
+
 class BrewCoffee(Resource):
     def get(self):
         return 418

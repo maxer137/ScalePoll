@@ -48,6 +48,27 @@ class SQLDatabase():
 
         return questions
     
+    # Get all closed questions in general
+    def get_closed_questions(self):
+        questions = self.session.query(Question).order_by(Question.creation_time).all()
+
+        print("CHECKING FOR CLOSED QUESTIONS")
+        closed_questions = []
+        for question in questions:
+            if question.closed == True: # or question.close_time <= datetime.now(timezone.utc):
+                closed_questions.append(question)
+
+        # TODO: Create it as a database filter
+        # questions = self.session.query(Question).filter(
+        #     Question.closed == True or 
+        #     Question.close_time <= datetime.now(timezone.utc)
+        #     ).order_by(Question.creation_time).all()
+        
+        print(closed_questions)
+
+        return closed_questions
+    
+    # Get closed questions related to a specific question
     def get_related_questions(self, question:Question):
         questions = self.session.query(Question).filter(
             Question.root_question_uuid == question.root_question_uuid and
@@ -56,7 +77,6 @@ class SQLDatabase():
             ).order_by(Question.creation_time).all()
 
         return questions
-    
 
     def get_iterated_question(self, iteration, user_uuid):
         questions = self.session.query(Question).order_by(Question.creation_time).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).all()
@@ -107,6 +127,9 @@ class SQLDatabase():
         # else :
         if question.root_question_uuid is None:
             question.root_question_uuid = question.uuid
+
+        print("SAVING QUESTION")
+        print(question)
 
         self.session.add(question)
         self.session.commit()
@@ -251,9 +274,11 @@ class SQLDatabase():
         self.save_question(question=mock_question_11)
 
         mock_question_12 = Question("Do you think violent video games increase aggressive behavior in young people?","Critics of violent games argue they can influence real-life aggression, while others say there’s no proven link.")
+        mock_question_12.closed = True
         self.save_question(question=mock_question_12)
 
         mock_question_13 = Question("Should all citizens have free access to healthcare?","Proponents of free healthcare argue it’s a basic right, while critics are concerned about high government costs.")
+        mock_question_13.closed = True
         self.save_question(question=mock_question_13)
 
     def reset_database(self):

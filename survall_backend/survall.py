@@ -26,7 +26,10 @@ class Survall():
     
     def get_related_questions(self, question:Question):
         return self.database.get_related_questions(question)
-        
+
+    def get_closed_questions(self):
+        return self.database.get_closed_questions()
+
     def authenticate(self, session_token):
         return self.database.check_authentication(session_token)
 

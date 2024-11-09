@@ -106,6 +106,9 @@ class SQLDatabase():
     def get_answer_by_uuid(self, answer_uuid):
         return self.session.query(Answer).filter(Answer.uuid == answer_uuid).first()
     
+    def get_question_by_uuid(self, question_uuid):
+        return self.session.query(Question).filter(Question.uuid == question_uuid).first()
+    
     def inject_mock_data(self):
         mock_user = Authentication(user_hash="mock_user_hash")
         mock_user.session_token = str(uuid.UUID('12345678-1234-5678-1234-567812345678'))

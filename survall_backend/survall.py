@@ -34,7 +34,7 @@ class Survall():
         return self.database.get_iterated_question(self.question_iteration)
     
     def get_question_by_id(self, answer:Answer):
-        return self.database.get_answer_by_uuid(answer_uuid=answer.question_uuid)
+        return self.database.get_question_by_uuid(answer_uuid=answer.question_uuid)
     
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
         if not self.database.check_if_user_answered_question(user_question_pair=user_question_pair):

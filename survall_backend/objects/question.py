@@ -58,7 +58,13 @@ class Question(Base):
         return {
             "uuid": self.uuid,
             "question": self.question,
-            "description": self.description
+            "description": self.description,
+            "positive":self.amount_positive,
+            "neutral":self.amount_neutral,
+            "negative":self.amount_negative,
+            "relevance_sum":self.relevance_sum,
+            "answers_count":self.answers_count,
+            "discussion_count":self.discussion_count
         }
 
     def to_json(self):
@@ -67,3 +73,17 @@ class Question(Base):
 
     def calculate_threshold(self):
         return self.discussion_count * (self.relevance_sum/self.answers_count)
+    
+    def __str__(self):
+        # Custom string representation
+        return (
+            f"Question(uuid={self.uuid}, "
+            f"question={self.question}, "
+            f"description={self.description}, "
+            f"positive={self.amount_positive}, "
+            f"neutral={self.amount_neutral}, "
+            f"negative={self.amount_negative}, "
+            f"relevance_sum={self.relevance_sum}, "
+            f"answers_count={self.answers_count}, "
+            f"discussion_count={self.discussion_count})"
+        )

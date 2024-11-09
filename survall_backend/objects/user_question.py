@@ -25,3 +25,7 @@ class UserQuestionPair(Base):
             question_uuid=data["question_uuid"],
             user_uuid=data["user_uuid"]
         )
+    
+    def __str__(self):
+            # Custom string representation to print both uuids
+            return f"UserQuestionPair(user_uuid={self.user_uuid}, question_uuid={self.question_uuid})"

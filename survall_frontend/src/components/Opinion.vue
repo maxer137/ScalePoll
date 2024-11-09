@@ -2,36 +2,73 @@
 
 import {ref} from 'vue'
 import * as Bootstrap from "bootstrap";
+import {useLoginStore} from "@/stores/login.js";
 
-const props = defineProps({
-  title: String,
-})
+const store = useLoginStore()
 
 const result = ref(false)
 let vote_value = ref(null)
 let flewaway = ref(false)
-// function change_vote(vote) {
-//   vote_value.value = vote
-// }
 
 let relevance_value = ref(3)
 
 let discussion_value = ref('')
 
-let fore = ref(20)
-let neutral = ref(30)
-let against = ref(50)
-let relevance = ref(3.4)
+function next_question() {
+  //request_question()
+  response_done.value = true
+  // show_question({'question': "hi, test", 'description': 'hi another test'})
+  // result.value = false
+  // vote_value = ref(null)
+  // flewaway = ref(false)
+  // relevance_value = ref(3)
+  // discussion_value = ref('')
+}
+
+let question = ref('')
+let description = ref('')
+
+async function request_question() {
+  let body = {
+    user_hash: store.token,
+  }
+  console.log(body)
+  // let response = await fetch(`${DOMAIN_NAME}/response`, {
+  //   method: 'POST',
+  //   body: JSON.stringify(body),
+  // })
+  // console.log(await response.text())
+  // show_question(await response.json())
+}
+
+async function show_question(received) {
+  //question uuid
+  //question
+  //desription
+  question = received['question']
+  description = received['description']
+
+  // question = 'Ronald is the best boomer'
+  // description = 'He is old'
+}
+
+let fore = ref(0)
+let neutral = ref(0)
+let against = ref(0)
+let relevance = ref(3)
+let response_done = ref(false)
+
 
 async function submit_vote() {
   let body = {
     question_uuid: 0,
-    user_uuid: 0,
+    user_hash: 0,
     answer_score: vote_value.value,
     relevance_score: parseInt(relevance_value.value),
     discussion_field: discussion_value.value,
   }
   result.value = !result.value
+  show_results(0)
   console.log(body)
   const collapseElementList = document.querySelectorAll('#results-collapse')
   const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
@@ -49,26 +86,38 @@ async function show_results(results) {
   //question uuid
   //fore, against, neutral
   //relevance
+
+  //fore = results['fore']
+  //against = results['against']
+  //neutral = results['neutral']
+  //relevance = results['relevance']
+
+  fore = ref(30)
+  neutral = ref(30)
+  against = ref(40)
+  relevance = ref(3.4)
 }
 
 function flew() {
   flewaway.value = true
   console.log(flewaway)
 }
+
+show_question('hi')
 </script>
 
 <template>
   <div :class="{card: true, flyaway: vote_value!=null}" v-if="!flewaway" style="width: 100%;" @animationend="flew">
     <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
-      <p class="card-text">Background information on topic</p>
+      <h5 class="card-title">{{ question }}</h5>
+      <p class="card-text">{{ description }}</p>
     </div>
     <!--Buttons-->
     <div class="form card-footer d-flex flex-column">
       <div>
         <label class="form-label">Do you agree with the statement?</label>
         <div class="d-flex justify-content-between">
-          <input type="radio" class="btn-check" name="options" id="agree" autocomplete="off" value="-1"
+          <input type="radio" class="btn-check" name="options" id="agree" autocomplete="off" value="1"
                  v-model="vote_value">
           <label class="btn btn-outline-danger" for="agree">Disagree</label>
 
@@ -76,14 +125,14 @@ function flew() {
                  v-model="vote_value">
           <label class="btn btn-outline-primary" for="unsure">Unsure</label>
 
-          <input type="radio" class="btn-check" name="options" id="disagree" autocomplete="off" value="1"
+          <input type="radio" class="btn-check" name="options" id="disagree" autocomplete="off" value="-1"
                  v-model="vote_value">
           <label class="btn btn-outline-success" for="disagree">Agree</label>
         </div>
       </div>
     </div>
   </div>
-  <div class="card fly-in" v-else>
+  <div class="card" :class="{flyaway: response_done, 'fly-in': !response_done}" v-else>
     <div class="card-body">
       <h5 class="card-title">Feedback</h5>
       <div>
@@ -110,18 +159,20 @@ function flew() {
     <div class="card-footer collapse" id="results-collapse">
       <div>
         <h5>General opinion</h5>
+        <p>{{ question }}</p>
         <div class="progress bg-danger" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-bar bg-success" :style="{'width': fore + '%'}" id="progress_fore">{{fore}}%</div>
-          <div class="progress-bar bg-secondary" :style="{'width': neutral + '%'}">{{neutral}}%</div>
           <div class="progress-bar bg-danger" :style="{'width': against + '%'}">{{against}}%</div>
+          <div class="progress-bar bg-secondary" :style="{'width': neutral + '%'}">{{neutral}}%</div>
+          <div class="progress-bar bg-success" :style="{'width': fore + '%'}" id="progress_fore">{{fore}}%</div>
         </div>
         <div class="d-flex flex-row">
-          <h5 class="text-success">Yes</h5>
-          <h5 class="text-secondary translate-middle-x position-absolute start-50">Neutral</h5>
-          <h5 class="text-danger translate-middle-x position-absolute end-0">No</h5>
+          <p class="text-danger ">No</p>
+          <p class="text-secondary translate-middle-x position-absolute start-50">Neutral</p>
+          <p class="text-success translate-middle-x position-absolute end-0">Yes</p>
         </div>
         <h5>General relevance</h5>
         <input type="range" class="form-range" min="1" max="5" step="0.1" v-model=relevance disabled/>
+        <button type="button" class="btn btn-success" @click="next_question()">Next</button>
       </div>
     </div>
   </div>

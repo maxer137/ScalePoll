@@ -19,6 +19,9 @@ class Survall():
     def register_authentication(self, authentication:Authentication):
         self.database.register_authentication(authentication)
 
+    def get_previous_questions(self, authentication:Authentication):
+        return self.database.get_previous_questions(authentication)
+        
     def authenticate(self, session_token):
         return self.database.check_authentication(session_token)
 

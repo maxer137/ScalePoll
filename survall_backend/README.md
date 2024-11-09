@@ -27,3 +27,6 @@ In cmd: `curl --header "Content-Type: application/json" --data "{\"question_uuid
 `curl --request POST --header "Content-Type: application/json" --header "Authorization: [INSERT TOKEN HERE]" --data "[INSERT DATA HERE]" http://127.0.0.1:1337/authentication_example`
 
 `curl --request POST --header "Content-Type: application/json" --header "Authorization: 12345678-1234-5678-1234-567812345678" --data "[INSERT DATA HERE]" http://127.0.0.1:1337/authentication_example`
+
+#### Get all previous questions from the user (using the mock user)
+`curl --request GET --header "Authorization: 12345678-1234-5678-1234-567812345678" http://127.0.0.1:1337/previous_questions`

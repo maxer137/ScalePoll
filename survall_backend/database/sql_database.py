@@ -36,6 +36,12 @@ class SQLDatabase():
     def check_authentication(self, session_token):
         return self.session.query(Authentication).filter(Authentication.session_token == session_token).first()
 
+    def get_previous_questions(self, authentication:Authentication):
+        question_uuids = self.session.query(UserQuestionPair.question_uuid).filter_by(user_uuid=authentication.user_hash)
+        unique_question_uuids = [uuid[0] for uuid in question_uuids]
+        questions = self.session.query(Question).filter(Question.uuid.in_(unique_question_uuids)).all()
+
+        return questions
 
     def get_random_question(self):
         return self.session.query(Question).order_by(func.random()).first()
@@ -105,7 +111,7 @@ class SQLDatabase():
         mock_question.relevance_sum += mock_answer.relevance_score
 
         mock_user_question_pair = UserQuestionPair(
-            user_uuid=str(uuid.uuid4()),
+            user_uuid=mock_user.user_hash,
             question_uuid=mock_question.get_uuid()
         )
 

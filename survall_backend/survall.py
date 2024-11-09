@@ -36,3 +36,5 @@ class Survall():
 
         # TODO return question statistics
 
+    def save_question(self, question:Question):
+        self.database.save_question(question=question)

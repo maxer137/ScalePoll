@@ -10,11 +10,16 @@ from objects.authentication import Authentication
 
 class RequestQuestion(Resource):
     def get(self):
-        question:Question = Survall().get_question()
+        authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
+        if authentication is None: return 401
 
-        json_question = question.to_dict_short()
+        question:Question = Survall().get_question(authentication.user_hash)
 
-        return json_question, 200
+        # If there is no valid question to ask
+        if question is None:
+            return None,204
+
+        return question.to_dict_short(), 200
     
 class AnswerQuestion(Resource):
     def post(self):
@@ -23,8 +28,9 @@ class AnswerQuestion(Resource):
         authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
         if authentication is None: return 401
 
-        data['user_uuid'] = authentication.user_hash
         answer:Answer = Answer.from_dict(data)
+
+        data['user_uuid'] = authentication.user_hash
         user_question_pair:UserQuestionPair = UserQuestionPair.from_dict(data)
 
         Survall().save_answer(answer, user_question_pair)
@@ -64,6 +70,19 @@ class RelatedQuestions(Resource):
 
         return related_questions_dict_list, 200
     
+class ClosedQuestions(Resource):
+    def get(self):
+        authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
+        if authentication is None: return 401
+
+        closed_questions = Survall().get_closed_questions()
+
+        print(closed_questions)
+
+        closed_questions_dict_list = [question.to_dict() for question in closed_questions]
+
+        return closed_questions_dict_list, 200    
+
 class BrewCoffee(Resource):
     def get(self):
         return 418

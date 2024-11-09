@@ -15,7 +15,7 @@ from database.sql_base import Base
 class SQLDatabase():
     def __init__(self, DATABASE_NAME='survall.db', inject_mock_data=True):
         # Setup the SQLite engine
-        self.db_url = f'sqlite:///{DATABASE_NAME}'
+        self.db_url = f'sqlite:///{DATABASE_NAME}?check_same_thread=False'
         self.engine = create_engine(self.db_url, echo=True)
 
         # Create all the tables (Question, Answer, UserQuestionAnswer)
@@ -48,6 +48,27 @@ class SQLDatabase():
 
         return questions
     
+    # Get all closed questions in general
+    def get_closed_questions(self):
+        questions = self.session.query(Question).order_by(Question.creation_time).all()
+
+        print("CHECKING FOR CLOSED QUESTIONS")
+        closed_questions = []
+        for question in questions:
+            if question.closed == True: # or question.close_time <= datetime.now(timezone.utc):
+                closed_questions.append(question)
+
+        # TODO: Create it as a database filter
+        # questions = self.session.query(Question).filter(
+        #     Question.closed == True or 
+        #     Question.close_time <= datetime.now(timezone.utc)
+        #     ).order_by(Question.creation_time).all()
+        
+        print(closed_questions)
+
+        return closed_questions
+    
+    # Get closed questions related to a specific question
     def get_related_questions(self, question:Question):
         questions = self.session.query(Question).filter(
             Question.root_question_uuid == question.root_question_uuid and
@@ -58,30 +79,45 @@ class SQLDatabase():
         return questions
 
     def get_iterated_question(self, iteration, user_uuid):
-        # TODO filter already answered questions
-
         questions = self.session.query(Question).order_by(Question.creation_time).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).all()
+       
+        # Exclude questions that the user has already answered
+        answered_question_uuids = self.session.query(UserQuestionPair.question_uuid).filter(
+            UserQuestionPair.user_uuid == user_uuid
+        ).all()
+        answered_question_uuids = {q[0] for q in answered_question_uuids}  # Convert to set for faster lookup
+
+        print("USER ANSWERED ALL THE FOLLOWING QUESTIONS:")
+        print(answered_question_uuids)
+
+        # Filter questions to exclude ones already answered by the user
+        unanswered_questions = [q for q in questions if q.get_uuid() not in answered_question_uuids]
 
         # Get the question based on the iteration and modulus of the total number of questions
-        question_index = iteration % len(questions) if questions else None
+        question_index = iteration % len(unanswered_questions) if unanswered_questions else None
 
         print(len(questions))
         print(question_index)
         print(iteration)
 
         # Return the question if available
-        return questions[question_index] if question_index is not None else None
+        return unanswered_questions[question_index] if question_index is not None else None
 
-    def get_random_question(self):
-        return self.session.query(Question).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).order_by(func.random()).first()
+    # TODO don't use this one anymore or also implement filtering
+    # def get_random_question(self):
+    #     return self.session.query(Question).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).order_by(func.random()).first()
     
     def check_if_user_answered_question(self, user_question_pair:UserQuestionPair):
         existing_answer = self.session.query(UserQuestionPair).filter_by(
             user_uuid=user_question_pair.user_uuid, 
             question_uuid=user_question_pair.question_uuid).first()
+        
+        print("CHECK IF THE USER ALREADY ANSWERED THE QUESTION:")
+        print(existing_answer)
 
-        if not existing_answer:
+        if existing_answer is None:
             return False
+        print("Answer already exists, skipping submitting")
         return True
     
     def save_question(self, question:Question):
@@ -92,12 +128,20 @@ class SQLDatabase():
         if question.root_question_uuid is None:
             question.root_question_uuid = question.uuid
 
+        print("SAVING QUESTION")
+        print(question)
+
         self.session.add(question)
         self.session.commit()
     
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
         # TODO update question statistics
-        question = self.get_question_of_answer(answer)
+        print("LOOKING FOR QUESTION:")
+        print(answer.question_uuid)
+        question = self.get_question_by_uuid(answer.question_uuid)
+        print("FOUND THE FOLLOWING QUESTION:")
+        print(question)
+
         question.answers_count += 1
         if int(answer.answer_score) == -1:
             question.amount_negative += 1
@@ -108,21 +152,26 @@ class SQLDatabase():
         else:
             print("ERROR: invalid vote, ignoring")
 
+
         if answer.discussion != '' and answer.discussion is not None:
             question.discussion_count += 1
 
         question.relevance_sum += int(answer.relevance_score)
+        question.threshold_sum += int(answer.relevance_score)
 
         self.session.add(question)
         self.session.add(answer)
         self.session.add(user_question_pair)
         self.session.commit()
 
+        print("Persisting Answer")
+        print(answer)
+
     def get_answers_of_question(self, question):
         return self.session.query(Answer).filter(Answer.question_uuid == question.uuid).all()
 
-    def get_question_of_answer(self, answer):
-        return self.session.query(Question).filter(Question.uuid == answer.question_uuid).first()
+    # def get_question_of_answer(self, answer):
+    #     return self.session.query(Question).filter(Question.uuid == answer.question_uuid).first()
 
     # Example of querying the database
     def get_answer_by_uuid(self, answer_uuid):
@@ -227,9 +276,11 @@ class SQLDatabase():
         self.save_question(question=mock_question_11)
 
         mock_question_12 = Question("Do you think violent video games increase aggressive behavior in young people?","Critics of violent games argue they can influence real-life aggression, while others say there’s no proven link.")
+        mock_question_12.closed = True
         self.save_question(question=mock_question_12)
 
         mock_question_13 = Question("Should all citizens have free access to healthcare?","Proponents of free healthcare argue it’s a basic right, while critics are concerned about high government costs.")
+        mock_question_13.closed = True
         self.save_question(question=mock_question_13)
 
     def reset_database(self):

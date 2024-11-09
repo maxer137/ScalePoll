@@ -26,15 +26,18 @@ class Survall():
     
     def get_related_questions(self, question:Question):
         return self.database.get_related_questions(question)
-        
+
+    def get_closed_questions(self):
+        return self.database.get_closed_questions()
+
     def authenticate(self, session_token):
         return self.database.check_authentication(session_token)
 
-    def get_question(self) -> Question:
+    def get_question(self, user_uuid) -> Question:
         # Get a question a specific user UUID hasn't answered yet
         # If relevant generate a new question
         self.question_iteration += 1
-        return self.database.get_iterated_question(self.question_iteration)
+        return self.database.get_iterated_question(self.question_iteration,user_uuid)
     
     def get_question_by_id(self, answer:Answer):
         return self.database.get_question_by_uuid(question_uuid=answer.question_uuid)
@@ -43,14 +46,14 @@ class Survall():
         if not self.database.check_if_user_answered_question(user_question_pair=user_question_pair):
             self.database.save_answer(answer=answer, user_question_pair=user_question_pair)
 
-        # TODO return question statistics
-
     def generate_new_question(self, question:Question):
         # If a question has been answered enough times and has enough relevance, a follow up question is generated and added to the database
-        if(question.answers_count * question.relevance_sum >= 30):
+        if(question.answers_count * question.threshold_sum >= 30):
             follow_up_question, question_explanation = Survall().openai.follow_up_question_query(question,Survall().database.get_answers_of_question(question))
             new_question = Question(follow_up_question, question_explanation,question.uuid,question.root_question_uuid)
             Survall().save_question(question=new_question)
+            question.threshold_sum = 0
+            Survall().save_question(question=question)
 
     def save_question(self, question:Question):
         self.database.save_question(question=question)

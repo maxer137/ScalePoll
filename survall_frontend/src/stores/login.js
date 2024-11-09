@@ -6,6 +6,8 @@ export const useLoginStore = defineStore('login', {
         logged_in: false,
     }),
     getters: {
+    },
+    actions: {
         async get_question() {
             let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/get_question`,{
                 headers: {'Authorization': `${this.token}`},
@@ -14,9 +16,7 @@ export const useLoginStore = defineStore('login', {
                 console.log("login success")
             }
             return [await response.json()]
-        }
-    },
-    actions: {
+        },
         async login(username) {
             console.log(username)
             let response = await fetch(`${import.meta.env.VITE_AUTH_DOMAIN}/login`, {

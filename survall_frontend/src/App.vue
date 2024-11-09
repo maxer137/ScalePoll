@@ -9,7 +9,8 @@ let store = useLoginStore()
 let questions = ref([])
 
 async function get_question() {
-  questions.value = await store.get_question
+  console.log("getting question")
+  questions.value = await store.get_question()
   console.log(questions.value)
 }
 
@@ -18,6 +19,11 @@ store.$subscribe((mutation, state) => {
     get_question()
   }
 })
+
+async function next_question() {
+  console.log("what")
+  await get_question()
+}
 console.log(questions.value)
 // evil debug to easily log in (don't tell evil hackers)
 // store.logged_in = true
@@ -30,7 +36,7 @@ console.log(questions.value)
   <main class="d-flex justify-content-between">
     <Login v-if="!store.logged_in" ></Login>
     <div v-for="question in questions" >
-      <Opinion :question="question"/>
+      <Opinion :question="question" :key="question['uuid']" @nextquestion="next_question"/>
     </div>
   </main>
 </template>

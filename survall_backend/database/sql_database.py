@@ -92,17 +92,19 @@ class SQLDatabase():
         # TODO update question statistics
         question = self.get_question_of_answer(answer)
         question.answers_count += 1
-        if answer.answer_score == -1:
+        if int(answer.answer_score) == -1:
             question.amount_negative += 1
-        elif answer.answer_score == 0:
+        elif int(answer.answer_score) == 0:
             question.amount_neutral += 1
-        elif answer.answer_score == 1:
+        elif int(answer.answer_score) == 1:
             question.amount_positive += 1
         else:
             print("ERROR: invalid vote, ignoring")
 
         if answer.discussion != '' and answer.discussion is not None:
             question.discussion_count += 1
+
+        question.relevance_sum += int(answer.relevance_score)
 
         self.session.add(question)
         self.session.add(answer)
@@ -137,10 +139,6 @@ class SQLDatabase():
             relevance_score=5, # Range: 1-5
             discussion="As a small business owner, I worry that raising the minimum wage will stretch my budget to the breaking point. I can’t afford to pay my employees more without having to cut staff or even close up shop."
             )
-        mock_question.amount_positive +=1 # As Answerscore is 1 (postive)
-        mock_question.answers_count +=1
-        mock_question.relevance_sum += mock_answer.relevance_score
-
         mock_user_question_pair = UserQuestionPair(
             user_uuid=mock_user.user_hash,
             question_uuid=mock_question.get_uuid()
@@ -155,9 +153,6 @@ class SQLDatabase():
             relevance_score=5, # Range: 1-5
             discussion="I believe raising the minimum wage is essential to reducing poverty and bridging the income gap. A fair wage would give people the financial security they need to live with dignity."
             )
-        mock_question.amount_positive +=1 # As Answerscore is 1 (postive)
-        mock_question.answers_count +=1
-        mock_question.relevance_sum += mock_answer.relevance_score
 
         mock_user_question_pair = UserQuestionPair(
             user_uuid=str(uuid.uuid4()),
@@ -172,9 +167,6 @@ class SQLDatabase():
             relevance_score=5, # Range: 1-5
             discussion="A higher minimum wage would help close the wage gap, especially for women and minorities who are overrepresented in low-wage industries. This change would promote a more equitable society."
             )
-        mock_question.amount_positive +=1 # As Answerscore is 1 (postive)
-        mock_question.answers_count +=1
-        mock_question.relevance_sum += mock_answer.relevance_score
 
         mock_user_question_pair = UserQuestionPair(
             user_uuid=str(uuid.uuid4()),
@@ -189,9 +181,6 @@ class SQLDatabase():
             relevance_score=5, # Range: 1-5
             discussion="There are better ways to fight poverty than raising the minimum wage. Tax credits, for instance, provide targeted relief without putting pressure on businesses to cover the costs."
             )
-        mock_question.amount_positive +=1 # As Answerscore is 1 (postive)
-        mock_question.answers_count +=1
-        mock_question.relevance_sum += mock_answer.relevance_score
 
         mock_user_question_pair = UserQuestionPair(
             user_uuid=str(uuid.uuid4()),

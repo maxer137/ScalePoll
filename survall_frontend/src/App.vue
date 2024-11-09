@@ -2,7 +2,7 @@
 import Opinion from './components/Opinion.vue'
 import { ref } from 'vue'
 import Login from "@/components/Login.vue";
-import {useLoginStore} from "@/stores/counter.js";
+import {useLoginStore} from "@/stores/login.js";
 
 
 let store = useLoginStore()

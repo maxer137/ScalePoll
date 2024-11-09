@@ -10,6 +10,8 @@ from objects.authentication import Authentication
 
 from database.sql_base import Base
 
+
+
 class SQLDatabase():
     def __init__(self, DATABASE_NAME='survall.db', inject_mock_data=True):
         # Setup the SQLite engine
@@ -57,7 +59,7 @@ class SQLDatabase():
     
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
         # TODO update question statistics
-        question = answer.get_question()
+        question = self.get_question_of_answer(answer)
         question.answers_count += 1
         if answer.answer_score == -1:
             question.amount_negative += 1

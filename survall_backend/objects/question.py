@@ -35,14 +35,14 @@ class Question(Base):
     answers_count = Column(Integer)
     discussion_count = Column(Integer)
 
-    def __init__(self, question, description):
+    def __init__(self, question, description, parent_question_uuid=None, root_question_uuid=None):
         self.uuid = str(uuid.uuid4())
 
         self.question = question
         self.description = description
 
-        self.parent_question_uuid = None
-        self.root_question_uuid = None
+        self.parent_question_uuid = parent_question_uuid
+        self.root_question_uuid = root_question_uuid
 
         self.amount_positive = 0
         self.amount_neutral = 0

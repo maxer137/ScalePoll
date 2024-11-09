@@ -60,6 +60,9 @@ class SQLDatabase():
         # if self.session.query(Question).filter(Question.uuid == question.uuid).first():
         #     print("Question already exists!")
         # else :
+        if question.root_question_uuid is None:
+            question.root_question_uuid = question.uuid
+            
         self.session.add(question)
         self.session.commit()
     

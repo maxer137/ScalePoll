@@ -30,7 +30,7 @@ class SQLDatabase():
 
 
     def register_authentication(self, authentication:Authentication):
-        self.session.add(authentication)
+        self.session.merge(authentication)
         self.session.commit()
 
     def check_authentication(self, session_token):
@@ -89,6 +89,10 @@ class SQLDatabase():
         return self.session.query(Answer).filter(Answer.uuid == answer_uuid).first()
     
     def inject_mock_data(self):
+        mock_user = Authentication(user_hash="mock_user_hash")
+        mock_user.session_token = str(uuid.UUID('12345678-1234-5678-1234-567812345678'))
+        self.register_authentication(authentication=mock_user)
+
         mock_question = Question("Do you agree with raising the minimum wage?", "The minimum wage is the lowest pay that a worker may receive. Due to costs of living, some believe it is too low to sustain a healthy lifestyle.") # This is a root question so no parent or root uuid is set
         mock_answer = Answer(
             question_uuid=mock_question.get_uuid(),

@@ -36,8 +36,8 @@ class Survall():
     def get_question(self, user_uuid) -> Question:
         # Get a question a specific user UUID hasn't answered yet
         # If relevant generate a new question
-        self.question_iteration += 1
-        return self.database.get_iterated_question(self.question_iteration,user_uuid)
+        # self.question_iteration += 1
+        return self.database.get_random_question(self.question_iteration,user_uuid)
     
     def get_question_by_id(self, answer:Answer):
         return self.database.get_question_by_uuid(question_uuid=answer.question_uuid)

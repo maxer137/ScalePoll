@@ -103,10 +103,31 @@ class SQLDatabase():
         # Return the question if available
         return unanswered_questions[question_index] if question_index is not None else None
 
-    # TODO don't use this one anymore or also implement filtering
-    # def get_random_question(self):
-    #     return self.session.query(Question).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).order_by(func.random()).first()
-    
+    def get_random_question(self, iteration, user_uuid):
+        questions = self.session.query(Question).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).order_by(func.random()).all()
+
+        # Exclude questions that the user has already answered
+        answered_question_uuids = self.session.query(UserQuestionPair.question_uuid).filter(
+            UserQuestionPair.user_uuid == user_uuid
+        ).all()
+        answered_question_uuids = {q[0] for q in answered_question_uuids}  # Convert to set for faster lookup
+
+        print("USER ANSWERED ALL THE FOLLOWING QUESTIONS:")
+        print(answered_question_uuids)
+
+        # Filter questions to exclude ones already answered by the user
+        unanswered_questions = [q for q in questions if q.get_uuid() not in answered_question_uuids]
+
+        # Get the question based on the iteration and modulus of the total number of questions
+        question_index = iteration % len(unanswered_questions) if unanswered_questions else None
+
+        print(len(questions))
+        print(question_index)
+        print(iteration)
+
+        # Return the question if available
+        return unanswered_questions[question_index] if question_index is not None else None
+
     def check_if_user_answered_question(self, user_question_pair:UserQuestionPair):
         existing_answer = self.session.query(UserQuestionPair).filter_by(
             user_uuid=user_question_pair.user_uuid, 

@@ -13,10 +13,20 @@ export const useLoginStore = defineStore('login', {
                 headers: {'Authorization': `${this.token}`},
             })
             if (!response.ok) {
-                console.log("login success")
+                console.log("something went wrong")
             }
             return [await response.json()]
         },
+        async get_my_questions() {
+            let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/previous_questions`,{
+                headers: {'Authorization': `${this.token}`},
+            })
+            if (!response.ok) {
+                console.log()
+            }
+            return await response.json()
+        },
+
         async login(username) {
             console.log(username)
             let response = await fetch(`${import.meta.env.VITE_AUTH_DOMAIN}/login`, {

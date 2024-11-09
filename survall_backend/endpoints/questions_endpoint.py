@@ -10,7 +10,10 @@ from objects.authentication import Authentication
 
 class RequestQuestion(Resource):
     def get(self):
-        question:Question = Survall().get_question()
+        authentication:Authentication = Survall().authenticate(request.headers.get('Authorization'))
+        if authentication is None: return 401
+
+        question:Question = Survall().get_question(authentication.user_hash)
 
         json_question = question.to_dict_short()
 

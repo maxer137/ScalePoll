@@ -1,15 +1,9 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask import request
 import hmac
 import hashlib
 import requests
 import os
-import json
-
-
-class TemplateEndpoint(Resource):
-    def get(self):
-        return "Test", 418
 
 class Login(Resource):
     def post(self):

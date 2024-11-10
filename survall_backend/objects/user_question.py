@@ -12,7 +12,6 @@ class UserQuestionPair(Base):
     # This ensures that each user can only have one answer for a specific question
     __table_args__ = (PrimaryKeyConstraint('user_uuid', 'question_uuid'),)
 
-    # Relationships
     question = relationship("Question", backref="user_answers")
     
     def __init__(self, user_uuid, question_uuid):
@@ -27,5 +26,4 @@ class UserQuestionPair(Base):
         )
     
     def __str__(self):
-            # Custom string representation to print both uuids
             return f"UserQuestionPair(user_uuid={self.user_uuid}, question_uuid={self.question_uuid})"

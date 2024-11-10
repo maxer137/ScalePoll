@@ -4,7 +4,6 @@ class OpenAiClass():
     def __init__(self, client):
         self.client = client
 
-        # this will change later when we know what we need as a system prompt
         self.system = """
         Act as a moderator for democratic discussions on controversial and popular topics.
         Yes or no questions on controversial topics will be asked to users who can then write discussion posts on their opinions.
@@ -27,7 +26,6 @@ class OpenAiClass():
         """
 
     def follow_up_question_query(self, question, answers):
-
         discussions = [answer.discussion for answer in answers]
         results_yes = question.amount_positive
         results_no = question.amount_negative
@@ -35,7 +33,8 @@ class OpenAiClass():
 
         request = "Generate a follow up question based on the following question: " + question.question + ". The discussions and replies are, each new discussion is seperated by a ***: " + "***".join(discussions) + ". The results are to the question are " + str(results_yes) + " that answered yes, " + str(results_no) + " that answered no, and " + str(results_neutral) + " that answered neutrally."
         print("Request: ", request)
-        # Create a reuqest to api and get the completion
+        
+        # Create a request to api and get the completion
         completion = self.client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[

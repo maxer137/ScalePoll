@@ -1,4 +1,3 @@
-import json
 from flask_restful import Resource
 from flask import request
 
@@ -15,9 +14,9 @@ class RequestQuestion(Resource):
 
         question:Question = Survall().get_question(authentication.user_hash)
 
-        # If there is no valid question to ask
+        # If there is no valid question to ask return a error code
         if question is None:
-            return None,204
+            return None, 204
 
         return question.to_dict_short(), 200
     

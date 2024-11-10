@@ -7,11 +7,11 @@ from sqlalchemy.orm import relationship
 from database.sql_base import Base
 
 class Question(Base):
-    __tablename__ = 'questions'  # Table name in the database
+    __tablename__ = 'questions'
 
     uuid = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     
-    parent_question_uuid = Column(String, ForeignKey('questions.uuid'), nullable=True)  # Nullable for root-level questions
+    parent_question_uuid = Column(String, ForeignKey('questions.uuid'), nullable=True)
     root_question_uuid = Column(String, ForeignKey('questions.uuid'), nullable=True)
 
     # Relationships to allow navigation of the hierarchy
@@ -108,7 +108,6 @@ class Question(Base):
         return self.discussion_count * (self.relevance_sum/self.answers_count)
     
     def __str__(self):
-        # Custom string representation
         return (
             f"Question(uuid={self.uuid}, "
             f"question={self.question}, "

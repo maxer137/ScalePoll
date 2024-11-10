@@ -1,12 +1,11 @@
 from flask_restful import Resource
-from flask import jsonify
 
 from survall import Survall
 from objects.question import Question
 
+# This is a mock implementation to generate a follow up question via the ChatGPT api
 class RequestOpenAi(Resource):
     def get(self):
-        # This is a mock implementation to generate a follow up question
         question:Question = Survall().get_question()
         
         follow_up_question, question_explanation = Survall().openai.follow_up_question_query(question,Survall().database.get_answers_of_question(question))

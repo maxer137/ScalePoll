@@ -20,8 +20,8 @@ class Answer(Base):
     question = relationship("Question", backref="answers")  # Relationship with the Question model
     
     # Fields that should not be saved to the DB
-    answer_score = None  # We won’t store this field in the database
-    relevance_score = None  # We won’t store this field in the database
+    answer_score = None
+    relevance_score = None
 
     def __init__(self, question_uuid, answer_score, relevance_score, discussion):
         self.uuid = str(uuid.uuid4())

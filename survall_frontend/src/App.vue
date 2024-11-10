@@ -40,7 +40,7 @@ store.$subscribe((mutation, state) => {
     </div>
   </header>
 
-  <main class="d-flex flex-grow justify-content-between align-items-center h-100">
+  <main class="d-flex flex-grow justify-content-between align-items-center h-100 m-4">
     <Login v-if="!store.logged_in"/>
     <div v-else>
       <div v-if="page===0">

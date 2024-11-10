@@ -94,7 +94,7 @@ onkeydown = (event) => {
     </div>
   </div>
   <div class="card" :class="{flyaway: response_done, 'fly-in': !response_done}" v-else>
-    <div class="card-body">
+    <div class="card-body" style="min-width: 25rem">
       <h5 class="card-title">Feedback</h5>
       <div>
         <label class="form-label">How relevant is this question</label>

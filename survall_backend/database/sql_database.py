@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
 import os
 import uuid
+
+from datetime import datetime, timezone
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
@@ -57,12 +58,6 @@ class SQLDatabase():
         for question in questions:
             if question.closed == True: # or question.close_time <= datetime.now(timezone.utc):
                 closed_questions.append(question)
-
-        # TODO: Create it as a database filter
-        # questions = self.session.query(Question).filter(
-        #     Question.closed == True or 
-        #     Question.close_time <= datetime.now(timezone.utc)
-        #     ).order_by(Question.creation_time).all()
         
         print(closed_questions)
 
@@ -79,7 +74,8 @@ class SQLDatabase():
         return questions
 
     def get_iterated_question(self, iteration, user_uuid):
-        questions = self.session.query(Question).order_by(Question.creation_time).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).all()
+        questions = self.session.query(Question).order_by(Question.creation_time).filter(
+            Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).all()
        
         # Exclude questions that the user has already answered
         answered_question_uuids = self.session.query(UserQuestionPair.question_uuid).filter(
@@ -96,15 +92,16 @@ class SQLDatabase():
         # Get the question based on the iteration and modulus of the total number of questions
         question_index = iteration % len(unanswered_questions) if unanswered_questions else None
 
-        print(len(questions))
-        print(question_index)
+        print(f"Current open questions: {len(questions)}")
+        print(f"Current questions index: {question_index}")
         print(iteration)
 
         # Return the question if available
         return unanswered_questions[question_index] if question_index is not None else None
 
     def get_random_question(self, iteration, user_uuid):
-        questions = self.session.query(Question).filter(Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).order_by(func.random()).all()
+        questions = self.session.query(Question).filter(
+            Question.closed == False and Question.close_time >= datetime.now(timezone.utc)).order_by(func.random()).all()
 
         # Exclude questions that the user has already answered
         answered_question_uuids = self.session.query(UserQuestionPair.question_uuid).filter(
@@ -117,16 +114,11 @@ class SQLDatabase():
 
         # Filter questions to exclude ones already answered by the user
         unanswered_questions = [q for q in questions if q.get_uuid() not in answered_question_uuids]
-
-        # Get the question based on the iteration and modulus of the total number of questions
-        question_index = iteration % len(unanswered_questions) if unanswered_questions else None
-
-        print(len(questions))
-        print(question_index)
-        print(iteration)
-
-        # Return the question if available
-        return unanswered_questions[question_index] if question_index is not None else None
+        
+        if len(unanswered_questions) > 0:
+            return unanswered_questions[0] # Can just chose the first in the list as it is randomized when querying
+        else:
+            return None
 
     def check_if_user_answered_question(self, user_question_pair:UserQuestionPair):
         existing_answer = self.session.query(UserQuestionPair).filter_by(
@@ -138,14 +130,11 @@ class SQLDatabase():
 
         if existing_answer is None:
             return False
+        
         print("Answer already exists, skipping submitting")
         return True
     
     def save_question(self, question:Question):
-        # TODO check if the question not already exists, this might work
-        # if self.session.query(Question).filter(Question.uuid == question.uuid).first():
-        #     print("Question already exists!")
-        # else :
         if question.root_question_uuid is None:
             question.root_question_uuid = question.uuid
 
@@ -156,7 +145,6 @@ class SQLDatabase():
         self.session.commit()
     
     def save_answer(self, answer:Answer, user_question_pair:UserQuestionPair):
-        # TODO update question statistics
         print("LOOKING FOR QUESTION:")
         print(answer.question_uuid)
         question = self.get_question_by_uuid(answer.question_uuid)
@@ -191,16 +179,13 @@ class SQLDatabase():
     def get_answers_of_question(self, question):
         return self.session.query(Answer).filter(Answer.question_uuid == question.uuid).all()
 
-    # def get_question_of_answer(self, answer):
-    #     return self.session.query(Question).filter(Question.uuid == answer.question_uuid).first()
-
-    # Example of querying the database
     def get_answer_by_uuid(self, answer_uuid):
         return self.session.query(Answer).filter(Answer.uuid == answer_uuid).first()
     
     def get_question_by_uuid(self, question_uuid):
         return self.session.query(Question).filter(Question.uuid == question_uuid).first()
     
+    # Mock data for debugging
     def inject_mock_data(self):
         mock_user = Authentication(user_hash="mock_user_hash")
         mock_user.session_token = str(uuid.UUID('12345678-1234-5678-1234-567812345678'))
@@ -303,34 +288,3 @@ class SQLDatabase():
         mock_question_13 = Question("Should all citizens have free access to healthcare?","Proponents of free healthcare argue it’s a basic right, while critics are concerned about high government costs.")
         mock_question_13.closed = True
         self.save_question(question=mock_question_13)
-
-    def reset_database(self):
-        """Drops and recreates all tables"""
-
-        self.session.close()
-
-        print("Resetting the database...")
-        if os.path.exists(self.db_url.split(':///')[1]):  # Check if the database file exists
-            os.remove(self.db_url.split(':///')[1])  # Remove the old database file
-
-        # Drop all existing tables
-        Base.metadata.drop_all(self.engine)
-
-        # Recreate tables
-        Base.metadata.create_all(self.engine)
-        print("Database reset complete.")
-
-        
-        
-   
-
-
-
-
-
-
-
-
-
-
-

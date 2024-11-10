@@ -1,49 +1,31 @@
 # Junction2024-Hackaconda
-<!-- A lot of people feel unheard and unrepresented in the current democracy. This results in people’s opinions not being taken into consideration. Which is the foundation of democracy. This must change. To do this, we introduce Survall, a surveying platform that serves you! 
-
-An integral concern for such a tool is security. Our tool is designed to be applicable to various tiers of authentication. For example, a government can use government credentials to authenticate users. Whilst small groups, can simply use a password. The authenticator hashes the identity, which is sent to the voting. This makes sure that no actor can trace the voting back to the person, making it anonymous
-
-After authentication we get to the voting screen. On here you see a randomly chosen discussion point, along with its description. Here you give your opinion on the topic. After sharing your opinion, you get to the feedback page where you can share your opinion and give feedback on the relevance of the discussion point. After submitting your vote and opinion you can also see the general opinion of others, before moving on to the next discussion.
-
-After voting, there is no saved connection between you and your submitted information, only that you shared your opinions. All votes and discussions are saved within the discussion.
-
-When a certain discussion has no clear majority and people decide it is relevant to current affairs, a new follow-up question is generated to continue the conversation. To do this, a large language model looks at all the received votes and discussions to determine what people find to be an important topic in the discussion. The new question is then added to the pool of discussions that users can answer. By generating new related questions, we aim to discover the root issue at the heart of important topics. 
-
-In the history tab you can view which discussions you interacted with. Only the general opinion is shown here since your specific vote is not saved. All concluded discussions that are now closed can be viewed in the overview page.
-
-This tool is easily accessible and simple to use. It can be presented in the form of an app or website, but it can also be set up as feedback kiosks at public locations, including community centres, train stations, libraries, etc. By providing these opportunities for participation at many locations with such a simple interface, making your voice heard has never been easier. -->
-
 ## ❔ Problem Description:
-A lot of people feel unheard and unrepresented in the current democracy. This results in people’s opinions not being taken into consideration. Which is the foundation of democracy. This must change. To do this, we introduce Survall, a surveying platform that serves you!
+Many people feel unheard and unrepresented in the current democracy. This results in people’s opinions not being taken into consideration, a core foundation of democracies. This must change. As a solution we introduce Survall, a surveying platform that serves you!
 
 ## 🌍 Real-World Impact:
-The goals of our platform are multifold: 
+Survall seeks to achieve several key goals:
 
-- **Ease of use** to reduce the barier of participation as much as possible, aiming to encourage participation in the democratic process. Whether as an app, website, or kiosk in public spaces, this easy-to-use tool makes it simple for anyone to participate and have their voice heard in ongoing conversations.
+- **Ease of use:** To encourage participation in the democratic process, the barrier of entry should be reduced as much as possible. Whether as an app, website, or kiosk in public spaces, this easy-to-use tool makes it simple for anyone to participate and have their voice heard in ongoing conversations.
 
-- **Automatisation** leveraging LLMs to moderate the discussions by generating relevant follow-up questions that take into the account what the users find important based on their discussion. 
-This reduces the amount of human moderation needed to maintain the platform.
+- **Automatisation:** By leveraging LLMs to moderate the discussions by generating relevant follow-up questions that take into account what the users find important based on their discussions. 
+This aims to reduce the amount of human moderation required to maintain the platform, increasing the ease of adoption from hosts perspective.
 
-- **Anonymity** is an important aspect to maintain, as it allows users to share their opinions without fear of it coming back to them. 
-This is achieved by dividing the authentication and the voting on two different services.
+- **Anonymity:** Protecting users' identities is central to fostering free expression. This is achieved by dividing the authentication and the voting on two different services.
 The authentication service cannot influence the voting, but can verify identities.
 The voting service cannot read identities, nor how individual users voted. 
 
-- **Transparency** is maintained by showing people the aggregated statistics of all discussed questions, allowing them to verify the results themselves. This allows users to build up trust in the platform, encouraging its use and thus in extention the participation in the democratic process.  
-
-
-<!-- This platform lets you share your thoughts on a variety of randomly chosen discussion topics through a quick and simple voting process. After casting your vote, you can leave feedback on the topic's relevance and see how others feel too. If a discussion doesn’t have a clear majority, a follow-up question is generated by a language model to dig deeper into the issue. Your opinions are kept anonymous—only the general opinion of the group is shown in your history. -->
-
+- **Transparency:** The key to build trust in any system, especially a democratic one. This aspect is promoted by showing people the aggregated statistics of all discussed questions, allowing them to verify the results themselves. This allows users to build up trust in the results generated by the platform, encouraging its use, and thus in extention, the participation in the democratic process.  
 
 ## 💭 Future Enhancements:
-As a proof of concept, Survall, has multiple opportunities to iterate and expand on the concept, below are some of our interests:
+As a proof of concept, Survall, has a great potential for growth:
 
-- **Moderation Tools:** Creating admin pages gives administrators and moderators an easy platform to add new discussion points and review discussions.
+- **Moderation Tools:** Creating admin pages gives administrators and moderators an easy platform to add new discussion points and the LLM generated follow-up question suggestions, improving the platform's usability for hosts
 
-- **Security Integration:** Due to its modular setup, the Survall authentication server can be integrated with a trusted platform based on the hosts needs. For example, nation-wide a goverment can use their authentication platform to ensure only their citizens can interact with their Survall intance. In the private sector, companies can use public single sign-on services like GitHub or link it with their own platform. 
+- **Security Integration:** Due to its modular setup, the Survall authentication server can be integrated with a trusted platform based on the hosts needs. For example, governments could use national authentication systems to ensure only citizens participate, while private organizations could utilize public single sign-on services like GitHub.
 
-- **LLM Bias reduction and finetuning:** Large Language Models are known to be inherently biased and so care should be taken to mitigate this infuencing the discussion. 
+- **LLM Bias Reduction and Fine-Tuning:** Large Language Models are known to be inherently biased and so care should be taken to mitigate this infuencing the discussion, eroding trust and increasing the moderation load. A fine-tuned LLM closely monitored for bias would be a step in solving this. 
 
+With Survall, making your voice heard has never been easier!
 
 ## 📓 Setup
 The Survall application consists of three components, the client which which the users interact, the authetication server which sets up secure sessions, and the backend server which serves questions to the clients which they can answer.

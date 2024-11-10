@@ -1,11 +1,13 @@
 <script setup>
 import {ref} from 'vue'
-import {useLoginStore} from "@/stores/login.js";
+import {useApiStore} from "@/stores/login.js";
 import * as Bootstrap from "bootstrap";
 
+const store = useApiStore()
 
-const store = useLoginStore()
-
+//In case we want to skip the answer of the question.
+//This will only allow a user to press agree, disagree, or skip
+//For demonstration purposes, you can enable it with an environment variable
 const skipping = import.meta.env.VITE_PUBLIC_RUN === 'true'
 
 const props = defineProps(['question'])
@@ -17,43 +19,37 @@ let flewaway = ref(false)
 let relevance_value = ref(3)
 let discussion_value = ref('')
 
+// When the next button is pressed. Tell the parent component
 function next_question() {
   emit('nextquestion')
   response_done.value = true
 }
 
 let response_done = ref(false)
-console.log(props.question.uuid)
 let vote_stats = ref({})
 
+//Call the api to cast a vote and get the results of the question
 async function submit_vote() {
   result.value = !result.value
-
-  const collapseElementList = document.querySelectorAll('#results-collapse')
-  const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
-  console.log(collapseList)
-
   vote_stats.value = await store.submit_vote(props.question.uuid,
       store.token,
       vote_value.value,
       parseInt(relevance_value.value),
       discussion_value.value,)
-  console.log(await vote_stats)
 }
 
+//Used to only emit next question event after the card has flown out of view
 function flew(e) {
-  console.log(e.animationName)
-  console.log(e.animationName)
   if (e.animationName.startsWith('flyaway')) {
     if (skipping) {
       next_question()
     } else {
       flewaway.value = true
     }
-    console.log(flewaway)
   }
 }
 
+// Setup button presses for agreeing and disagreeing with opinions
 onkeydown = (event) => {
   if (event.key === 'a') {
     vote_value.value = 1

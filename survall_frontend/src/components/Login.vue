@@ -1,15 +1,17 @@
 <script setup>
 import {ref} from 'vue'
-import {useLoginStore} from "@/stores/login.js";
+import {useApiStore} from "@/stores/login.js";
 
-const store = useLoginStore()
+const store = useApiStore()
 
+//Generate a random number. This should be removed if connecting to a different service.
+//Ideally, replace this system with an OAuth2 flow
 let random = Math.floor(Math.random() * 99999999);
 let username = ref(random.toString())
 
+//Submit the login form
 async function login(event) {
   event.preventDefault()
-  console.log(username.value)
   await store.login(username.value)
 }
 </script>

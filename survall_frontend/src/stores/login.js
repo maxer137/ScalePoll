@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
 
-export const useLoginStore = defineStore('login', {
+//The Pinia store we use to contact the API and authentication server.
+export const useApiStore = defineStore('login', {
     state: () => ({
         token: null,
         logged_in: false,
     }),
-    getters: {
-    },
     actions: {
         async get_question() {
             let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/get_question`,{
@@ -29,6 +28,7 @@ export const useLoginStore = defineStore('login', {
             }
             return await response.json()
         },
+
         async get_closed_questions() {
             let response = await fetch(`${import.meta.env.VITE_API_DOMAIN}/closed_questions`,{
                 headers: {'Authorization': `${this.token}`},

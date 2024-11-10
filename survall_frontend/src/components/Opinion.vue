@@ -31,6 +31,10 @@ let vote_stats = ref({})
 //Call the api to cast a vote and get the results of the question
 async function submit_vote() {
   result.value = !result.value
+
+  const collapseElementList = document.querySelectorAll('#results-collapse')
+  const collapseList = [...collapseElementList].map(collapseEl => new Bootstrap.Collapse(collapseEl))
+
   vote_stats.value = await store.submit_vote(props.question.uuid,
       store.token,
       vote_value.value,

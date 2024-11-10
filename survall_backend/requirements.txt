@@ -1,6 +1,6 @@
-openai==1.54.3
-python-dotenv==1.0.1
 flask==3.0.3
 flask_restful==0.3.10
 flask_cors==5.0.0
+python-dotenv==1.0.1
 sqlalchemy==2.0.36
+openai==1.54.3

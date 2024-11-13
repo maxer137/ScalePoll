@@ -63,7 +63,6 @@ onkeydown = (event) => {
     vote_value.value = 0
   }
 };
-
 </script>
 
 <template>

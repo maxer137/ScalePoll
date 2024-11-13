@@ -40,7 +40,6 @@ export const useApiStore = defineStore('login', {
         },
 
         async login(username) {
-            console.log(username)
             let response = await fetch(`${import.meta.env.VITE_AUTH_DOMAIN}/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -54,17 +53,7 @@ export const useApiStore = defineStore('login', {
 
             this.token = (await response.json())['token']
             this.logged_in = true
-            await this.test_authentication()
-        },
-
-        async test_authentication() {
-            let response = fetch(`${import.meta.env.VITE_API_DOMAIN}/authentication_example`,{
-                headers: {'Authorization': `${this.token}`},
-                method: 'POST',
-            })
-            if (!response.ok) {
-                console.log("login success")
-            }
+            return true
         },
 
         async submit_vote(question_uiid, user_hash, answer_score, relevance_score, discussion_field) {

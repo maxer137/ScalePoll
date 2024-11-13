@@ -13,7 +13,6 @@ let questions = ref()
 //This way the user won't be biased by the amount of people that feel a certain way
 async function init() {
   questions.value = await store.get_my_questions()
-  console.log(questions.value)
 }
 init()
 </script>

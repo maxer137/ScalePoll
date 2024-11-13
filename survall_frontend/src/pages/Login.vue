@@ -1,8 +1,10 @@
 <script setup>
 import {ref} from 'vue'
 import {useApiStore} from "@/stores/login.js";
+import { useRouter } from 'vue-router'
 
 const store = useApiStore()
+const router = useRouter()
 
 //Generate a random number. This should be removed if connecting to a different service.
 //Ideally, replace this system with an OAuth2 flow
@@ -12,9 +14,13 @@ let username = ref(random.toString())
 //Submit the login form
 async function login(event) {
   event.preventDefault()
-  await store.login(username.value)
+  let output = await store.login(username.value)
+  if (output) {
+    await router.push('/')
+  }
 }
 </script>
+
 
 <template>
   <form>

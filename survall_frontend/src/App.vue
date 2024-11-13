@@ -6,6 +6,7 @@ import Login from "@/components/Login.vue";
 import AnsweredQuestions from "@/components/AnsweredQuestions.vue";
 import OutOfQuestions from "@/components/OutOfQuestions.vue";
 import ClosedQuestions from "@/components/ClosedQuestions.vue";
+import NewQuestion from "@/components/NewQuestion.vue";
 
 // Setup store to connect to api
 let store = useApiStore()
